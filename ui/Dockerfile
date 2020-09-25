@@ -29,5 +29,4 @@ ARG DOT_ENV_PATH=./ui/.env
 COPY ${DOT_ENV_PATH} ./ui/.env
 
 WORKDIR /mono/ui
-CMD echo "To start a UI application run:" \
-  "yarn start"
+CMD yarn start

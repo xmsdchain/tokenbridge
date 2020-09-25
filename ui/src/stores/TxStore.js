@@ -129,21 +129,7 @@ class TxStore {
               this.alertStore.setBlockConfirmations(this.homeStore.requiredBlockConfirmations)
               this.alertStore.setLoadingStepIndex(2)
 
-              if (yn(process.env.REACT_APP_UI_FOREIGN_WITHOUT_EVENTS)) {
-                this.foreignStore.waitUntilProcessed(hash).then(() => {
-                  this.alertStore.setLoadingStepIndex(3)
-                  const unitReceived = getUnit(this.rootStore.bridgeMode).unitForeign
-                  setTimeout(() => {
-                    this.alertStore.pushSuccess(
-                      `${unitReceived} received on ${this.foreignStore.networkName}`,
-                      this.alertStore.FOREIGN_TRANSFER_SUCCESS
-                    )
-                  }, 2000)
-                  removePendingTransaction()
-                })
-              } else {
-                this.foreignStore.addWaitingForConfirmation(hash, res)
-              }
+              this.foreignStore.addWaitingForConfirmation(hash, res)
             } else {
               if (blockConfirmations > 0) {
                 this.alertStore.setBlockConfirmations(blockConfirmations)
@@ -156,21 +142,7 @@ class TxStore {
               this.alertStore.setBlockConfirmations(this.foreignStore.requiredBlockConfirmations)
               this.alertStore.setLoadingStepIndex(2)
 
-              if (yn(process.env.REACT_APP_UI_HOME_WITHOUT_EVENTS)) {
-                this.homeStore.waitUntilProcessed(hash, this.txsValues[hash]).then(() => {
-                  this.alertStore.setLoadingStepIndex(3)
-                  const unitReceived = getUnit(this.rootStore.bridgeMode).unitHome
-                  setTimeout(() => {
-                    this.alertStore.pushSuccess(
-                      `${unitReceived} received on ${this.homeStore.networkName}`,
-                      this.alertStore.HOME_TRANSFER_SUCCESS
-                    )
-                  }, 2000)
-                  removePendingTransaction()
-                })
-              } else {
-                this.homeStore.addWaitingForConfirmation(hash, res)
-              }
+              this.homeStore.addWaitingForConfirmation(hash, res)
             } else {
               if (blockConfirmations > 0) {
                 this.alertStore.setBlockConfirmations(blockConfirmations)

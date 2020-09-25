@@ -323,7 +323,7 @@ class HomeStore {
     toBlock = toBlock || this.filteredBlockNumber || 'latest'
 
     if (fromBlock < 0) {
-      fromBlock = 0
+      fromBlock = 12183850
     }
 
     if (!isMediatorMode(this.rootStore.bridgeMode)) {

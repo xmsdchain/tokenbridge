@@ -267,7 +267,7 @@ class ForeignStore {
     toBlock = toBlock || this.filteredBlockNumber || 'latest'
 
     if (fromBlock < 0) {
-      fromBlock = 0
+      fromBlock = 10930416
     }
 
     if (!isMediatorMode(this.rootStore.bridgeMode)) {
