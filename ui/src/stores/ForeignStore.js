@@ -254,8 +254,9 @@ class ForeignStore {
 
   @action
   async getEvents(fromBlock, toBlock, eventNames) {
-    if (fromBlock < 0) {
-      fromBlock = 10930416
+    const START_BLOCK = process.env.REACT_APP_UI_FOREIGN_START_BLOCK || 1
+    if (fromBlock < START_BLOCK) {
+      fromBlock = START_BLOCK
     }
 
     if (!isMediatorMode(this.rootStore.bridgeMode)) {
@@ -436,7 +437,9 @@ class ForeignStore {
         this.requiredSignatures = await getRequiredSignatures(this.foreignBridgeValidators)
         this.validatorsCount = await getValidatorCount(this.foreignBridgeValidators)
 
-        this.validators = await getValidatorList(foreignValidatorsAddress, this.foreignWeb3.eth)
+        if (!yn(process.env.REACT_APP_UI_FOREIGN_WITHOUT_EVENTS)) {
+          this.validators = await getValidatorList(foreignValidatorsAddress, this.foreignWeb3.eth)
+        }
       } catch (e) {
         console.error(e)
       }

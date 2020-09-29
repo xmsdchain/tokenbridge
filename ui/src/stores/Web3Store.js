@@ -54,7 +54,7 @@ class Web3Store {
         this.getBalances(false)
         setInterval(() => {
           this.getBalances(true)
-        }, 3000)
+        }, 15000)
       })
       .catch(e => {
         const error = {

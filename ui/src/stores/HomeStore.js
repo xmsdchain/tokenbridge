@@ -305,8 +305,9 @@ class HomeStore {
 
   @action
   async getEvents(fromBlock, toBlock, eventNames) {
-    if (fromBlock < 0) {
-      fromBlock = 12183850
+    const START_BLOCK = process.env.REACT_APP_UI_HOME_START_BLOCK || 1
+    if (fromBlock < START_BLOCK) {
+      fromBlock = START_BLOCK
     }
 
     if (!isMediatorMode(this.rootStore.bridgeMode)) {
@@ -498,7 +499,9 @@ class HomeStore {
         this.requiredSignatures = await getRequiredSignatures(this.homeBridgeValidators)
         this.validatorsCount = await getValidatorCount(this.homeBridgeValidators)
 
-        this.validators = await getValidatorList(homeValidatorsAddress, this.homeWeb3.eth)
+        if (!yn(process.env.REACT_APP_UI_HOME_WITHOUT_EVENTS)) {
+          this.validators = await getValidatorList(homeValidatorsAddress, this.homeWeb3.eth)
+        }
       } catch (e) {
         console.error(e)
       }
