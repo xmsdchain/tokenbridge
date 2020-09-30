@@ -46,31 +46,45 @@ class Web3Store {
     this.alertStore = rootStore.alertStore
     this.rootStore = rootStore
 
-    this.getWeb3Promise = getWeb3()
-
-    this.getWeb3Promise
-      .then(web3Config => {
-        this.setWeb3State(web3Config)
-        this.getBalances(false)
-        setInterval(() => {
-          this.getBalances(true)
-        }, 15000)
+    this.getWeb3Promise = new Promise((resolve, reject) => {
+      // Wait for loading completion to avoid race conditions with web3 injection timing.
+      window.addEventListener('load', async () => {
+        resolve(getWeb3(this.updateWeb3Promise.bind(this)))
       })
-      .catch(e => {
-        const error = {
-          rejected: () => this.alertStore.pushError(e.message),
-          unlock: () => this.alertStore.pushError(e.message),
-          install: () => (this.walletInstalled = false)
-        }[e.type]
-
-        console.error(e.message, 'web3 not loaded')
-        this.errors.push(e.message)
-        this.metamaskNotSetted = true
-        error()
-      })
+    })
+    this.setInjectedWeb3()
     this.setWeb3Home()
     this.setWeb3Foreign()
-    this.checkMetamaskConfig()
+  }
+
+  @action
+  async updateWeb3Promise() {
+    this.getWeb3Promise = getWeb3(this.updateWeb3Promise.bind(this))
+    this.setInjectedWeb3()
+  }
+
+  @action
+  async setInjectedWeb3() {
+    try {
+      const web3Config = await this.getWeb3Promise
+      this.setWeb3State(web3Config)
+      this.getBalances(false)
+      setInterval(() => {
+        this.getBalances(true)
+      }, 15000)
+    } catch (e) {
+      const error = {
+        rejected: () => this.alertStore.pushError(e.message),
+        unlock: () => this.alertStore.pushError(e.message),
+        install: () => (this.walletInstalled = false)
+      }[e.type]
+      console.error(e.message, 'web3 not loaded')
+      this.errors.push(e.message)
+      this.metamaskNotSetted = true
+      error()
+    } finally {
+      this.checkMetamaskConfig()
+    }
   }
 
   @action
