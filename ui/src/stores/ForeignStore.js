@@ -1,5 +1,5 @@
 import { action, observable } from 'mobx'
-import { getBlockNumber } from './utils/web3'
+import { getBlockNumber, estimateGas } from './utils/web3'
 import {
   BRIDGE_VALIDATORS_ABI,
   ERC677_BRIDGE_TOKEN_ABI,
@@ -122,6 +122,12 @@ class ForeignStore {
 
   @observable
   requiredBlockConfirmations = 8
+
+  @observable
+  showExecuteSignaturesModal = false
+
+  @observable
+  messageAndSignatures = {}
 
   feeManager = {
     totalFeeDistributedFromSignatures: BN(0),
@@ -394,6 +400,42 @@ class ForeignStore {
     }
     this.setBlockFilter(0)
     this.homeStore.setBlockFilter(0)
+  }
+
+  async executeSignatures() {
+    const { message, signatures } = this.messageAndSignatures
+    const data = this.foreignBridge.methods.executeSignatures(message, signatures).encodeABI()
+    const gasPrice = this.rootStore.gasPriceStore.gasPriceInHex
+    const to = this.COMMON_FOREIGN_BRIDGE_ADDRESS
+    const from = this.web3Store.defaultAccount.address
+    const value = '0x00'
+    const gas = await estimateGas(this.web3Store.injectedWeb3, to, gasPrice, from, value, data)
+    this.web3Store.injectedWeb3.eth
+      .sendTransaction({ to, from, gasPrice, gas, value, data, chainId: this.web3Store.foreignNet.id })
+      .on('transactionHash', hash => {
+        console.log('txHash', hash)
+        this.alertStore.setLoadingStepIndex(3)
+        this.showExecuteSignaturesModal = false
+        this.messageAndSignatures = {}
+        const urlExplorer = this.getExplorerTxUrl(hash)
+        const unitReceived = getUnit(this.rootStore.bridgeMode).unitForeign
+        setTimeout(() => {
+          this.alertStore.pushSuccess(
+            `${unitReceived} received on ${this.networkName} on Tx
+            <a href='${urlExplorer}' target='blank' style="overflow-wrap: break-word;word-wrap: break-word;">${hash}</a>`,
+            this.alertStore.FOREIGN_TRANSFER_SUCCESS
+          )
+        }, 2000)
+      })
+      .on('error', e => {
+        if (
+          !e.message.includes('not mined within 50 blocks') &&
+          !e.message.includes('Failed to subscribe to new newBlockHeaders')
+        ) {
+          this.alertStore.setLoading(false)
+          this.alertStore.pushError('Transaction rejected on wallet')
+        }
+      })
   }
 
   getTxReceipt(hash) {

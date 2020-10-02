@@ -18,7 +18,7 @@ class TxStore {
   }
 
   @action
-  async doSend({ to, from, value, data, sentValue }) {
+  async doSend({ to, from, value, data, sentValue, isManualWithdrawal = false }) {
     return this.web3Store.getWeb3Promise.then(async () => {
       if (!this.web3Store.defaultAccount) {
         this.alertStore.pushError('Please unlock wallet')
@@ -47,7 +47,7 @@ class TxStore {
             this.alertStore.setRequiredBlockConfirmations(requiredConfirmations)
             this.alertStore.setLoadingStepIndex(1)
             addPendingTransaction()
-            this.getTxReceipt(hash)
+            this.getTxReceipt(hash, isManualWithdrawal)
           })
           .on('error', e => {
             if (
@@ -104,21 +104,21 @@ class TxStore {
     }
   }
 
-  async getTxReceipt(hash) {
+  async getTxReceipt(hash, isManualWithdrawal) {
     const web3 = this.web3Store.injectedWeb3
     web3.eth.getTransaction(hash, (error, res) => {
       if (res && res.blockNumber) {
-        this.getTxStatus(hash)
+        this.getTxStatus(hash, isManualWithdrawal)
       } else {
         console.log('not mined yet', hash)
         setTimeout(() => {
-          this.getTxReceipt(hash)
+          this.getTxReceipt(hash, isManualWithdrawal)
         }, 5000)
       }
     })
   }
 
-  async getTxStatus(hash) {
+  async getTxStatus(hash, isManualWithdrawal) {
     const web3 = this.web3Store.injectedWeb3
     web3.eth.getTransactionReceipt(hash, (error, res) => {
       if (res && res.blockNumber) {
@@ -128,13 +128,16 @@ class TxStore {
             if (blockConfirmations >= this.homeStore.requiredBlockConfirmations) {
               this.alertStore.setBlockConfirmations(this.homeStore.requiredBlockConfirmations)
               this.alertStore.setLoadingStepIndex(2)
-
-              this.foreignStore.addWaitingForConfirmation(hash, res)
+              if (isManualWithdrawal) {
+                this.homeStore.waitForSignatures(hash)
+              } else {
+                this.foreignStore.addWaitingForConfirmation(hash, res)
+              }
             } else {
               if (blockConfirmations > 0) {
                 this.alertStore.setBlockConfirmations(blockConfirmations)
               }
-              this.getTxStatus(hash)
+              this.getTxStatus(hash, isManualWithdrawal)
             }
           } else {
             const blockConfirmations = this.foreignStore.latestBlockNumber - res.blockNumber
@@ -147,7 +150,7 @@ class TxStore {
               if (blockConfirmations > 0) {
                 this.alertStore.setBlockConfirmations(blockConfirmations)
               }
-              this.getTxStatus(hash)
+              this.getTxStatus(hash, isManualWithdrawal)
             }
           }
         } else {
@@ -155,7 +158,7 @@ class TxStore {
           this.alertStore.pushError(`${hash} Mined but with errors. Perhaps out of gas`)
         }
       } else {
-        this.getTxStatus(hash)
+        this.getTxStatus(hash, isManualWithdrawal)
       }
     })
   }

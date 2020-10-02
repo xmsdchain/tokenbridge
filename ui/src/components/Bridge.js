@@ -9,6 +9,7 @@ import { BridgeNetwork } from './index'
 import { ModalContainer } from './ModalContainer'
 import { NetworkDetails } from './NetworkDetails'
 import { TransferAlert } from './TransferAlert'
+import ExecuteSignaturesModal from './ExecuteSignaturesModal'
 import { getFeeToApply, validFee } from '../stores/utils/rewardable'
 import { inject, observer } from 'mobx-react'
 import { toDecimals } from '../stores/utils/decimals'
@@ -90,7 +91,8 @@ export class Bridge extends React.Component {
             from: web3Store.defaultAccount.address,
             value,
             data: '0x',
-            sentValue: value
+            sentValue: value,
+            isManualWithdrawal: true
           })
         }
       } catch (e) {
@@ -396,6 +398,13 @@ export class Bridge extends React.Component {
                 this.setState({ showConfirmation: false, confirmationData: {} })
               }}
               {...confirmationData}
+            />
+          </ModalContainer>
+          <ModalContainer showModal={foreignStore.showExecuteSignaturesModal}>
+            <ExecuteSignaturesModal
+              reverse={reverse}
+              networkName={foreignStore.networkName}
+              executeSignatures={() => foreignStore.executeSignatures()}
             />
           </ModalContainer>
         </div>
