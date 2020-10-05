@@ -359,6 +359,7 @@ export class Bridge extends React.Component {
                   networkTitle={reverse ? foreignNetworkName : homeNetworkName}
                   showModal={reverse ? this.loadForeignDetails : this.loadHomeDetails}
                   side="left"
+                  isManualWithdrawal={reverse && !isErcToErcMode(this.props.RootStore.bridgeMode)}
                 />
                 <BridgeForm
                   currency={formCurrency}
@@ -375,6 +376,7 @@ export class Bridge extends React.Component {
                   networkTitle={reverse ? homeNetworkName : foreignNetworkName}
                   showModal={reverse ? this.loadHomeDetails : this.loadForeignDetails}
                   side="right"
+                  isManualWithdrawal={!reverse && !isErcToErcMode(this.props.RootStore.bridgeMode)}
                 />
               </div>
             </div>

@@ -129,7 +129,7 @@
         justify-content: center;
 
         @media screen and (max-width: $tablet-width) {
-            height: 389px;
+            height: 425px;
         }
         .left-image-wrapper {
             background-color: $bridge-gradient-start;
@@ -244,6 +244,10 @@
                   &-stake {
                     width: auto;
                   }
+
+                  &-manual-withdrawal {
+                    height: 170px;
+                  }
                 }
             }
             .network-container-foreign {
@@ -269,6 +273,10 @@
 
                     &-stake {
                       width: auto;
+                    }
+
+                    &-manual-withdrawal {
+                      height: 170px;
                     }
                 }
             }
@@ -353,6 +361,21 @@
             }
             .info-icon-right {
                 margin-left: 10px;
+            }
+            .claim-tokens-button {
+              color: $bridge-link-color;
+              font-size: 12px;
+              font-weight: $network-show-more-font-weight;
+              cursor: pointer;
+              position: absolute;
+              bottom: 20px;
+              &:hover {
+                text-decoration-line: underline;
+              }
+              @media screen and (max-width: $tablet-width) {
+                position: relative;
+                bottom: 0;
+              }
             }
             .transfer-right {
                 background-image: url('#{ $bridge-image-center-pointing-right }');
