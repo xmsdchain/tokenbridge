@@ -414,18 +414,15 @@ class ForeignStore {
       .sendTransaction({ to, from, gasPrice, gas, value, data, chainId: this.web3Store.foreignNet.id })
       .on('transactionHash', hash => {
         console.log('txHash', hash)
-        this.alertStore.setLoadingStepIndex(3)
         this.showExecuteSignaturesModal = false
         this.messageAndSignatures = {}
         const urlExplorer = this.getExplorerTxUrl(hash)
-        const unitReceived = getUnit(this.rootStore.bridgeMode).unitForeign
-        setTimeout(() => {
-          this.alertStore.pushSuccess(
-            `${unitReceived} received on ${this.networkName} on Tx
-            <a href='${urlExplorer}' target='blank' style="overflow-wrap: break-word;word-wrap: break-word;">${hash}</a>`,
-            this.alertStore.FOREIGN_TRANSFER_SUCCESS
-          )
-        }, 2000)
+        const unitSent = getUnit(this.rootStore.bridgeMode).unitForeign
+        this.alertStore.pushSuccess(
+          `${unitSent} are sent on ${this.networkName} on Tx
+          <a href='${urlExplorer}' target='blank' style="overflow-wrap: break-word;word-wrap: break-word;">${hash}</a>`,
+          this.alertStore.FOREIGN_TRANSFER_SUCCESS
+        )
       })
       .on('error', e => {
         if (

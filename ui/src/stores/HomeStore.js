@@ -496,7 +496,6 @@ class HomeStore {
       if (!logs) {
         throw Error('No tx found')
       }
-      console.log(logs)
       const requestEvent = logs.find(
         x => x.topics[0] === '0x127650bcfb0ba017401abe4931453a405140a8fd36fece67bae2db174d3fdd63'
       )
@@ -506,10 +505,6 @@ class HomeStore {
       const data = this.homeWeb3.eth.abi.decodeParameters(['address', 'uint256'], requestEvent.data)
       const recipient = data['0']
       const value = data['1']
-      console.log('recipient:', recipient)
-      console.log('value:', value)
-      console.log('transactionHash:', txHash)
-      console.log('bridgeAddress:', this.rootStore.foreignStore.COMMON_FOREIGN_BRIDGE_ADDRESS)
       const message = createMessage({
         recipient,
         value,
@@ -533,6 +528,7 @@ class HomeStore {
       const signatures = packSignatures(signaturesArray)
       this.rootStore.foreignStore.messageAndSignatures = { message, signatures }
       this.rootStore.foreignStore.showExecuteSignaturesModal = true
+      this.alertStore.setLoading(false)
     } catch (error) {
       console.log(error)
       setTimeout(() => this.waitForSignatures(txHash), 5000)
