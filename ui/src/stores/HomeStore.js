@@ -490,44 +490,50 @@ class HomeStore {
     this.rootStore.foreignStore.setBlockFilter(0)
   }
 
+  async getSignatures(txHash) {
+    const tx = await this.homeWeb3.eth.getTransactionReceipt(txHash)
+    if (!tx || !tx.logs) {
+      throw Error('No transaction found.')
+    }
+    const requestEvent = tx.logs.find(
+      x => x.topics[0] === '0x127650bcfb0ba017401abe4931453a405140a8fd36fece67bae2db174d3fdd63'
+    )
+    if (!requestEvent) {
+      throw Error('It is not a withdrawal transaction. Specify hash of a transaction sending xDAI to the bridge.')
+    }
+    const data = this.homeWeb3.eth.abi.decodeParameters(['address', 'uint256'], requestEvent.data)
+    const recipient = data['0']
+    const value = data['1']
+    const message = createMessage({
+      recipient,
+      value,
+      transactionHash: txHash,
+      bridgeAddress: this.rootStore.foreignStore.COMMON_FOREIGN_BRIDGE_ADDRESS
+    })
+    const messageHash = this.homeWeb3.utils.soliditySha3(message)
+    let events = await this.homeBridge.getPastEvents('CollectedSignatures', { fromBlock: 12123723 })
+    events = events.filter(x => x.returnValues.messageHash === messageHash)
+    if (events.length === 0) {
+      throw Error(
+        'Transaction to the bridge is found but oracles’ confirmations are not collected yet. Wait for a minute and try again.'
+      )
+    }
+    const event = events[0]
+    const n = parseInt(event.returnValues.NumberOfCollectedSignatures)
+    const signaturesArray = []
+    for (let i = 0; i < n; i++) {
+      const signature = await this.homeBridge.methods.signature(messageHash, i).call()
+      const vrs = signatureToVRS(signature)
+      signaturesArray.push(vrs)
+    }
+    const signatures = packSignatures(signaturesArray)
+    this.rootStore.foreignStore.messageAndSignatures = { message, signatures }
+  }
+
   async waitForSignatures(txHash) {
     try {
-      const { logs } = await this.homeWeb3.eth.getTransactionReceipt(txHash)
-      if (!logs) {
-        throw Error('No tx found')
-      }
-      const requestEvent = logs.find(
-        x => x.topics[0] === '0x127650bcfb0ba017401abe4931453a405140a8fd36fece67bae2db174d3fdd63'
-      )
-      if (!requestEvent) {
-        throw Error('No UserRequestForSignature event found')
-      }
-      const data = this.homeWeb3.eth.abi.decodeParameters(['address', 'uint256'], requestEvent.data)
-      const recipient = data['0']
-      const value = data['1']
-      const message = createMessage({
-        recipient,
-        value,
-        transactionHash: txHash,
-        bridgeAddress: this.rootStore.foreignStore.COMMON_FOREIGN_BRIDGE_ADDRESS
-      })
-      const messageHash = this.homeWeb3.utils.soliditySha3(message)
-      let events = await this.homeBridge.getPastEvents('CollectedSignatures', { fromBlock: 12123723 })
-      events = events.filter(x => x.returnValues.messageHash === messageHash)
-      if (events.length === 0) {
-        throw Error('No CollectedSignatures event found. Try again later')
-      }
-      const event = events[0]
-      const n = parseInt(event.returnValues.NumberOfCollectedSignatures)
-      const signaturesArray = []
-      for (let i = 0; i < n; i++) {
-        const signature = await this.homeBridge.methods.signature(messageHash, i).call()
-        const vrs = signatureToVRS(signature)
-        signaturesArray.push(vrs)
-      }
-      const signatures = packSignatures(signaturesArray)
-      this.rootStore.foreignStore.messageAndSignatures = { message, signatures }
-      this.rootStore.foreignStore.showExecuteSignaturesModal = true
+      await this.getSignatures(txHash)
+      this.rootStore.foreignStore.setShowExecuteSignaturesModal(true)
       this.alertStore.setLoading(false)
     } catch (error) {
       console.log(error)

@@ -1,26 +1,87 @@
 import React from 'react'
 
-const { REACT_APP_UI_STYLES } = process.env
+export default class extends React.Component {
+  state = {
+    txHash: '',
+    error: null
+  }
 
-export default ({ reverse, executeSignatures, networkName }) => (
-  <div className="transfer-alert">
-    <div className="alert-container">
-      <div className={`transfer-title-alternative transfer-title-alternative-${REACT_APP_UI_STYLES}`}>
-        <span className="transfer-title-text">Claim Your Tokens</span>
-      </div>
-      <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        {reverse ? (
-          <div className="transfer-buttons">
-            <button onClick={executeSignatures} className="transfer-confirm" style={{ width: 100 }}>
-              Claim
-            </button>
+  handleInputChange = event => {
+    this.setState({
+      txHash: event.target.value
+    })
+  }
+
+  handleExecuteSignatures = async () => {
+    try {
+      await this.props.executeSignatures()
+    } catch (error) {
+      console.log(error)
+      const message = error.message.includes('Reverted')
+        ? 'This withdrawal request was already executed.'
+        : error.message
+      this.setState({ error: message })
+    }
+  }
+
+  handleSubmitTx = async () => {
+    try {
+      const { txHash } = this.state
+      await this.props.getSignatures(txHash)
+      await this.handleExecuteSignatures()
+    } catch (error) {
+      console.log(error)
+      this.setState({ error: error.message })
+    }
+  }
+
+  render() {
+    const { reverse, foreignNetworkName, withInput } = this.props
+    return (
+      <div className="execute-signatures-modal">
+        <div className="execute-signatures-modal-container">
+          <div className="execute-signatures-title">
+            <span className="execute-signatures-title-text">Claim Your Tokens</span>
           </div>
-        ) : (
-          <p className="transfer-description" data-testid="transfer-description">
-            Please switch the network in your wallet to <strong>{networkName}</strong>
-          </p>
-        )}
+          <div className="execute-signatures-content-container">
+            <div className="execute-signatures-content">
+              {reverse ? (
+                withInput ? (
+                  <div className="execute-signatures-content-with-input">
+                    <span className="execute-signatures-description">
+                      Specify the transaction hash where xDai transfer happened or relayTokens method was called
+                    </span>
+                    <div className="execute-signatures-form">
+                      <div className="execute-signatures-form-input-container">
+                        <input
+                          onChange={this.handleInputChange}
+                          type="text"
+                          className="execute-signatures-form-input"
+                          placeholder="Transaction hash..."
+                        />
+                      </div>
+                      <div>
+                        <button className="execute-signatures-form-button" onClick={this.handleSubmitTx}>
+                          Claim
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <button onClick={this.handleExecuteSignatures} className="execute-signatures-confirm">
+                    Claim
+                  </button>
+                )
+              ) : (
+                <p className="transfer-description">
+                  Please switch the network in your wallet to <strong>{foreignNetworkName}</strong>
+                </p>
+              )}
+              <span className="execute-signatures-error">{this.state.error}</span>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-)
+    )
+  }
+}

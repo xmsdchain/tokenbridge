@@ -867,6 +867,186 @@
             }
         }
     }
+    .execute-signatures-modal {
+        background-color: $modal-background-color;
+        border-radius: $transfer-alert-border-radius;
+        display: flex;
+        height: $transfer-alert-height;
+        width: $transfer-alert-width;
+        @media screen and (max-width: $tablet-width) {
+            flex-direction: column;
+            height: auto;
+            width: 100%;
+        }
+        .execute-signatures-modal-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: $transfer-alert-container-justify-content;
+            padding: $transfer-alert-container-padding;
+            width: $transfer-alert-container-width;
+
+            @media screen and (max-width: $tablet-width) {
+                padding: 10px 10px;
+                width: 94%;
+                height: 317px;
+            }
+
+            .execute-signatures-content-container {
+                flex: 1;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .execute-signatures-content {
+              flex: 1;
+              display: flex;
+              justify-content: center;
+              position: relative;
+          }
+
+            .execute-signatures-content-with-input {
+                display: flex;
+                flex-direction: column;
+
+                @media screen and (max-width: $tablet-width) {
+                    margin-top: -30px;
+                }
+            }
+
+            .execute-signatures-title {
+              &-core,
+              &-classic {
+                display: none;
+              }
+              &-stake {
+
+                .execute-signatures-title-text {
+                  color: $modal-text-color;
+                  font-weight: bold;
+                  font-size: 20px;
+                  line-height: 23px;
+                }
+              }
+            }
+
+            .execute-signatures-description {
+                color: $modal-text-color;
+                font-size: 14px;
+                line-height: 1.71;
+                padding: $transfer-description-padding;
+                margin-bottom: 10px;
+            }
+
+            .execute-signatures-error {
+                color: #ed4a4a;
+                font-size: 14px;
+                margin-top: 10px;
+                position: absolute;
+                bottom: -13px;
+                transform: translateY(100%);
+
+                @media screen and (max-width: $tablet-width) {
+                    bottom: -55px;
+                }
+            }
+
+            .execute-signatures-confirm {
+                background-color: $button-background-color;
+                border-radius: $button-transfer-confirm-border-radius;
+                color: $button-text-color;
+                flex-grow: 1;
+                font-size: $button-transfer-confirm-font-size;
+                line-height: 16px;
+                font-weight: 700;
+                height: $button-transfer-confirm-height;
+                max-width: $button-transfer-confirm-max-width;
+                text-decoration: none;
+                order: $transfer-alert-confirm-button-order;
+                width: 100px;
+
+                &:hover {
+                    background-color: $button-transfer-confirm-hover-background-color;
+                }
+            }
+            .execute-signatures-form {
+                display: flex;
+                background-color: $bridge-textfield-background;
+                padding: 8px 8px 8px 0;
+                border: 1px solid #E6ECF1;
+                box-sizing: border-box;
+                border-radius: 4px;
+                height: 60px;
+                @media screen and (max-width: $tablet-width) {
+                    width: 100%;
+                    background-color: unset;
+                    flex-direction: column;
+                    padding: 0;
+                    margin: 0;
+                    height: 40px;
+                }
+                &-input-container {
+                    display: flex;
+                    justify-content: space-between;
+                    flex: 1;
+
+                    @media screen and (max-width: $tablet-width) {
+                        background-color: rgba(251, 251, 252, 0.2);
+                        border-radius: 3px 3px 0 0;
+                        width: 100%;
+                    }
+                }
+                &-input {
+                    background-color: transparent;
+                    color: $bridge-textfield-color;
+                    font-size: 14px;
+                    height: $bridge-input-label-line-height;
+                    padding-left: 16px;
+                    padding-right: 16px;
+                    flex: 1;
+                    
+                    &::placeholder {
+                        color: $bridge-textfield-placeholder-color;
+                        font-size: 14px;
+
+                        @media screen and (max-width: $tablet-width) {
+                            font-size: 14px;
+                        }
+                    }
+
+                    &::placeholder {
+                        opacity: 0.3;
+                    }
+                    @media screen and (max-width: $tablet-width) {
+                        font-size: 14px;
+                        margin-bottom: 3px;
+                        height: 40px;
+                        width: 100%;
+                    }
+                }
+                &-button {
+                    background-color: $bridge-button-background-color;
+                    border-radius: $bridge-transfer-button-border-radius;
+                    color: $bridge-button-text-color;
+                    display: block;
+                    flex-shrink: 0;
+                    font-weight: 700;
+                    height: $bridge-transfer-button-height;
+                    text-decoration: none;
+                    width: $bridge-transfer-button-width;
+
+                    @media screen and (max-width: $tablet-width) {
+                        border-radius: $bridge-transfer-button-border-radius;
+                        width: 100%;
+                    }
+
+                    &:hover {
+                        background-color: $button-bridge-form-hover-background-color;
+                    }
+                }
+            }
+        }
+    }
 }
 
 .noWallet-alert {

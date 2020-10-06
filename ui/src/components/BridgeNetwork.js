@@ -10,7 +10,8 @@ export const BridgeNetwork = ({
   networkTitle,
   showModal,
   side,
-  isManualWithdrawal
+  isManualWithdrawal,
+  onManualWithdrawalClick
 }) => {
   const { REACT_APP_UI_STYLES } = process.env
   const containerName = isHome ? 'home' : 'foreign'
@@ -57,7 +58,9 @@ export const BridgeNetwork = ({
       </p>
       {showMore()}
       {isManualWithdrawal && (
-        <span className="claim-tokens-button">Haven't received your tokens?</span>
+        <span className="claim-tokens-button" onClick={onManualWithdrawalClick}>
+          Haven't received your tokens?
+        </span>
       )}
     </div>
   )

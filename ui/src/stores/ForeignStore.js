@@ -124,10 +124,10 @@ class ForeignStore {
   requiredBlockConfirmations = 8
 
   @observable
-  showExecuteSignaturesModal = false
+  executeSignaturesModal = false
 
   @observable
-  messageAndSignatures = {}
+  messageAndSignatures = null
 
   feeManager = {
     totalFeeDistributedFromSignatures: BN(0),
@@ -402,6 +402,11 @@ class ForeignStore {
     this.homeStore.setBlockFilter(0)
   }
 
+  @action
+  setShowExecuteSignaturesModal(show, withInput = false) {
+    this.executeSignaturesModal = { show, withInput }
+  }
+
   async executeSignatures() {
     const { message, signatures } = this.messageAndSignatures
     const data = this.foreignBridge.methods.executeSignatures(message, signatures).encodeABI()
@@ -414,8 +419,8 @@ class ForeignStore {
       .sendTransaction({ to, from, gasPrice, gas, value, data, chainId: this.web3Store.foreignNet.id })
       .on('transactionHash', hash => {
         console.log('txHash', hash)
-        this.showExecuteSignaturesModal = false
-        this.messageAndSignatures = {}
+        this.setShowExecuteSignaturesModal(false)
+        this.messageAndSignatures = null
         const urlExplorer = this.getExplorerTxUrl(hash)
         const unitSent = getUnit(this.rootStore.bridgeMode).unitForeign
         this.alertStore.pushSuccess(

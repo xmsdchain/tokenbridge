@@ -360,6 +360,7 @@ export class Bridge extends React.Component {
                   showModal={reverse ? this.loadForeignDetails : this.loadHomeDetails}
                   side="left"
                   isManualWithdrawal={reverse && !isErcToErcMode(this.props.RootStore.bridgeMode)}
+                  onManualWithdrawalClick={() => foreignStore.setShowExecuteSignaturesModal(true, true)}
                 />
                 <BridgeForm
                   currency={formCurrency}
@@ -377,6 +378,7 @@ export class Bridge extends React.Component {
                   showModal={reverse ? this.loadHomeDetails : this.loadForeignDetails}
                   side="right"
                   isManualWithdrawal={!reverse && !isErcToErcMode(this.props.RootStore.bridgeMode)}
+                  onManualWithdrawalClick={() => foreignStore.setShowExecuteSignaturesModal(true, true)}
                 />
               </div>
             </div>
@@ -402,11 +404,20 @@ export class Bridge extends React.Component {
               {...confirmationData}
             />
           </ModalContainer>
-          <ModalContainer showModal={foreignStore.showExecuteSignaturesModal}>
+          <ModalContainer
+            showModal={foreignStore.executeSignaturesModal.show}
+            hideModal={
+              foreignStore.executeSignaturesModal.withInput
+                ? () => foreignStore.setShowExecuteSignaturesModal(false)
+                : null
+            }
+          >
             <ExecuteSignaturesModal
               reverse={reverse}
-              networkName={foreignStore.networkName}
+              foreignNetworkName={foreignStore.networkName}
               executeSignatures={() => foreignStore.executeSignatures()}
+              getSignatures={txHash => homeStore.getSignatures(txHash)}
+              withInput={foreignStore.executeSignaturesModal.withInput}
             />
           </ModalContainer>
         </div>
