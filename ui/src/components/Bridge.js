@@ -22,13 +22,23 @@ export class Bridge extends React.Component {
     modalData: {},
     confirmationData: {},
     showModal: false,
-    showConfirmation: false
+    showConfirmation: false,
+    executeSignaturesError: null
   }
 
   handleInputChange = name => event => {
     this.setState({
       [name]: event.target.value
     })
+  }
+
+  setExecuteSignaturesError = error => {
+    this.setState({ executeSignaturesError: error })
+  }
+
+  onExecuteSignaturesModalClose = () => {
+    this.props.RootStore.foreignStore.setShowExecuteSignaturesModal(false)
+    this.setExecuteSignaturesError(null)
   }
 
   componentDidMount() {
@@ -407,8 +417,8 @@ export class Bridge extends React.Component {
           <ModalContainer
             showModal={foreignStore.executeSignaturesModal.show}
             hideModal={
-              foreignStore.executeSignaturesModal.withInput
-                ? () => foreignStore.setShowExecuteSignaturesModal(false)
+              foreignStore.executeSignaturesModal.withInput || this.state.executeSignaturesError
+                ? this.onExecuteSignaturesModalClose
                 : null
             }
           >
@@ -418,6 +428,8 @@ export class Bridge extends React.Component {
               executeSignatures={() => foreignStore.executeSignatures()}
               getSignatures={txHash => homeStore.getSignatures(txHash)}
               withInput={foreignStore.executeSignaturesModal.withInput}
+              error={this.state.executeSignaturesError}
+              setError={this.setExecuteSignaturesError}
             />
           </ModalContainer>
         </div>

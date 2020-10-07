@@ -2,8 +2,7 @@ import React from 'react'
 
 export default class extends React.Component {
   state = {
-    txHash: '',
-    error: null
+    txHash: ''
   }
 
   handleInputChange = event => {
@@ -15,13 +14,13 @@ export default class extends React.Component {
   handleExecuteSignatures = async () => {
     try {
       await this.props.executeSignatures()
-      this.setState({ error: null })
+      this.props.setError(null)
     } catch (error) {
       console.log(error)
       const message = error.message.includes('Reverted')
         ? 'This withdrawal request was already executed.'
         : error.message
-      this.setState({ error: message })
+      this.props.setError(message)
     }
   }
 
@@ -30,15 +29,15 @@ export default class extends React.Component {
       const { txHash } = this.state
       await this.props.getSignatures(txHash)
       this.handleExecuteSignatures()
-      this.setState({ error: null })
+      this.props.setError(null)
     } catch (error) {
       console.log(error)
-      this.setState({ error: error.message })
+      this.props.setError(error.message)
     }
   }
 
   render() {
-    const { reverse, foreignNetworkName, withInput } = this.props
+    const { reverse, foreignNetworkName, withInput, error } = this.props
     return (
       <div className="execute-signatures-modal">
         <div className="execute-signatures-modal-container">
@@ -79,7 +78,7 @@ export default class extends React.Component {
                   Please switch the network in your wallet to <strong>{foreignNetworkName}</strong>
                 </p>
               )}
-              <span className="execute-signatures-error">{this.state.error}</span>
+              <span className="execute-signatures-error">{error}</span>
             </div>
           </div>
         </div>
