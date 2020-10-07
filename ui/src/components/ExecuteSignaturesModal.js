@@ -15,6 +15,7 @@ export default class extends React.Component {
   handleExecuteSignatures = async () => {
     try {
       await this.props.executeSignatures()
+      this.setState({ error: null })
     } catch (error) {
       console.log(error)
       const message = error.message.includes('Reverted')
@@ -28,7 +29,8 @@ export default class extends React.Component {
     try {
       const { txHash } = this.state
       await this.props.getSignatures(txHash)
-      await this.handleExecuteSignatures()
+      this.handleExecuteSignatures()
+      this.setState({ error: null })
     } catch (error) {
       console.log(error)
       this.setState({ error: error.message })
