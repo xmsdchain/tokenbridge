@@ -47,41 +47,43 @@ export default class extends React.Component {
           <div className="execute-signatures-content-container">
             <div className="execute-signatures-content">
               {reverse ? (
-                withInput ? (
-                  <div className="execute-signatures-content-with-input">
-                    <span className="execute-signatures-description">
-                      Specify the transaction hash where xDai transfer happened or relayTokens method was called.{' '}
-                      <a href="https://www.xdaichain.com/" target="_blank" rel="noopener noreferrer">
-                        How to find the transaction hash in MetaMask?
-                      </a>
-                    </span>
-                    <div className="execute-signatures-form">
-                      <div className="execute-signatures-form-input-container">
-                        <input
-                          onChange={this.handleInputChange}
-                          type="text"
-                          className="execute-signatures-form-input"
-                          placeholder="Transaction hash..."
-                        />
-                      </div>
-                      <div>
-                        <button className="execute-signatures-form-button" onClick={this.handleSubmitTx}>
-                          Claim
-                        </button>
+                <>
+                  {withInput ? (
+                    <div className="execute-signatures-content-with-input">
+                      <span className="execute-signatures-description">
+                        Specify the transaction hash where xDai transfer happened or relayTokens method was called.{' '}
+                        <a href="https://www.xdaichain.com/" target="_blank" rel="noopener noreferrer">
+                          How to find the transaction hash in MetaMask?
+                        </a>
+                      </span>
+                      <div className="execute-signatures-form">
+                        <div className="execute-signatures-form-input-container">
+                          <input
+                            onChange={this.handleInputChange}
+                            type="text"
+                            className="execute-signatures-form-input"
+                            placeholder="Transaction hash..."
+                          />
+                        </div>
+                        <div>
+                          <button className="execute-signatures-form-button" onClick={this.handleSubmitTx}>
+                            Claim
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ) : (
-                  <button onClick={this.handleExecuteSignatures} className="execute-signatures-confirm">
-                    Claim
-                  </button>
-                )
+                  ) : (
+                    <button onClick={this.handleExecuteSignatures} className="execute-signatures-confirm">
+                      Claim
+                    </button>
+                  )}
+                  <span className="execute-signatures-error">{error}</span>
+                </>
               ) : (
                 <p className="transfer-description">
                   Please switch the network in your wallet to <strong>{foreignNetworkName}</strong>
                 </p>
               )}
-              <span className="execute-signatures-error">{error}</span>
             </div>
           </div>
         </div>
