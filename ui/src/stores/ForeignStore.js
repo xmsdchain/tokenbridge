@@ -421,13 +421,27 @@ class ForeignStore {
         console.log('txHash', hash)
         this.setShowExecuteSignaturesModal(false)
         this.messageAndSignatures = null
-        const urlExplorer = this.getExplorerTxUrl(hash)
+        this.alertStore.setRequiredBlockConfirmations(1)
+        this.alertStore.setBlockConfirmations(0)
+        this.alertStore.setLoading(true)
+        this.alertStore.setLoadingStepIndex(1)
+      })
+      .on('receipt', receipt => {
+        this.alertStore.setBlockConfirmations(1)
+        const txHash = receipt.transactionHash
+        const urlExplorer = this.getExplorerTxUrl(txHash)
         const unitSent = getUnit(this.rootStore.bridgeMode).unitForeign
-        this.alertStore.pushSuccess(
-          `${unitSent} are sent on ${this.networkName} on Tx
-          <a href='${urlExplorer}' target='blank' style="overflow-wrap: break-word;word-wrap: break-word;">${hash}</a>`,
-          this.alertStore.FOREIGN_TRANSFER_SUCCESS
-        )
+        setTimeout(() => {
+          this.alertStore.setLoadingStepIndex(3)
+          setTimeout(() => {
+            this.alertStore.setLoading(false)
+            this.alertStore.pushSuccess(
+              `${unitSent} are sent on ${this.networkName} on Tx
+              <a href='${urlExplorer}' target='blank' style="overflow-wrap: break-word;word-wrap: break-word;">${txHash}</a>`,
+              this.alertStore.FOREIGN_TRANSFER_SUCCESS
+            )
+          }, 1000)
+        }, 1000)
       })
       .on('error', e => {
         if (
