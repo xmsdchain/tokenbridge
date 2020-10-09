@@ -61,6 +61,7 @@ class Web3Store {
   async updateWeb3Promise() {
     this.getWeb3Promise = getWeb3(this.updateWeb3Promise.bind(this))
     this.setInjectedWeb3()
+    this.rootStore.gasPriceStore.updateGasPrice(true)
   }
 
   @action

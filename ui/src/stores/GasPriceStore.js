@@ -35,7 +35,7 @@ class GasPriceStore {
     this.updateGasPrice()
   }
 
-  async updateGasPrice() {
+  async updateGasPrice(once = false) {
     await this.web3Store.setHomeWeb3Promise
 
     if (await this.web3Store.onHomeSide()) {
@@ -56,7 +56,9 @@ class GasPriceStore {
     const fetchFn = this.gasPriceSupplierUrl === 'gas-price-oracle' ? null : () => fetch(this.gasPriceSupplierUrl)
     this.gasPrice = (await gasPriceFromSupplier(fetchFn, oracleOptions)) || this.gasPrice
 
-    setTimeout(() => this.updateGasPrice(), this.updateInterval)
+    if (!once) {
+      setTimeout(() => this.updateGasPrice(), this.updateInterval)
+    }
   }
 
   @computed
