@@ -134,3 +134,5 @@ export const getBridgeInterfacesVersion = async contract => {
     patch: parseInt(patch)
   }
 }
+
+export const wasMessageRelayed = (contract, txHash) => contract.methods.relayedMessages(txHash).call()

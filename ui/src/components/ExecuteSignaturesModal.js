@@ -17,10 +17,7 @@ export default class extends React.Component {
       this.props.setError(null)
     } catch (error) {
       console.log(error)
-      const message = error.message.includes('Reverted')
-        ? 'This withdrawal request was already executed.'
-        : error.message
-      this.props.setError(message)
+      this.props.setError(error.message)
     }
   }
 

@@ -39,7 +39,8 @@ import {
   getRequiredBlockConfirmations,
   getBridgeContract,
   getBridgeInterfacesVersion,
-  AMB_MULTIPLE_REQUESTS_PER_TX_VERSION
+  AMB_MULTIPLE_REQUESTS_PER_TX_VERSION,
+  wasMessageRelayed
 } from './utils/contract'
 import { balanceLoaded, removePendingTransaction } from './utils/testUtils'
 import sleep from './utils/sleep'
@@ -408,7 +409,11 @@ class ForeignStore {
   }
 
   async executeSignatures() {
-    const { message, signatures } = this.messageAndSignatures
+    const { message, signatures, txHash } = this.messageAndSignatures
+    const executed = await wasMessageRelayed(this.foreignBridge, txHash)
+    if (executed) {
+      throw Error('This withdrawal request was already executed.')
+    }
     const data = this.foreignBridge.methods.executeSignatures(message, signatures).encodeABI()
     const gasPrice = this.rootStore.gasPriceStore.gasPriceInHex
     const to = this.COMMON_FOREIGN_BRIDGE_ADDRESS

@@ -527,7 +527,7 @@ class HomeStore {
       signaturesArray.push(vrs)
     }
     const signatures = packSignatures(signaturesArray)
-    this.rootStore.foreignStore.messageAndSignatures = { message, signatures }
+    this.rootStore.foreignStore.messageAndSignatures = { message, signatures, txHash }
   }
 
   async waitForSignatures(txHash) {
