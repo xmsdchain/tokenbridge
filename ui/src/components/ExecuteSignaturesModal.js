@@ -52,8 +52,8 @@ export default class extends React.Component {
                     <div className="execute-signatures-content-with-input">
                       <span className="execute-signatures-description">
                         Specify the transaction hash where xDai transfer happened or relayTokens method was called.{' '}
-                        <a href="https://www.xdaichain.com/" target="_blank" rel="noopener noreferrer">
-                          How to find the transaction hash in MetaMask?
+                        <a href="https://www.xdaichain.com/for-users/converting-xdai-via-bridge/find-a-transaction-hash" target="_blank" rel="noopener noreferrer">
+                          How to find the transaction hash?
                         </a>
                       </span>
                       <div className="execute-signatures-form">
