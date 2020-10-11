@@ -34,7 +34,7 @@ export default class extends React.Component {
   }
 
   render() {
-    const { reverse, foreignNetworkName, withInput, error } = this.props
+    const { isOnTheRightNetwork, foreignNetworkName, withInput, error } = this.props
     return (
       <div className="execute-signatures-modal">
         <div className="execute-signatures-modal-container">
@@ -43,7 +43,7 @@ export default class extends React.Component {
           </div>
           <div className="execute-signatures-content-container">
             <div className="execute-signatures-content">
-              {reverse ? (
+              {isOnTheRightNetwork ? (
                 <>
                   {withInput ? (
                     <div className="execute-signatures-content-with-input">

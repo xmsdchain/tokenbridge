@@ -423,13 +423,13 @@ export class Bridge extends React.Component {
             }
           >
             <ExecuteSignaturesModal
-              reverse={reverse}
               foreignNetworkName={foreignStore.networkName}
               executeSignatures={() => foreignStore.executeSignatures()}
               getSignatures={txHash => homeStore.getSignatures(txHash)}
               withInput={foreignStore.executeSignaturesModal.withInput}
               error={this.state.executeSignaturesError}
               setError={this.setExecuteSignaturesError}
+              isOnTheRightNetwork={web3Store.metamaskNet.id.toString() === web3Store.foreignNet.id.toString()}
             />
           </ModalContainer>
         </div>
