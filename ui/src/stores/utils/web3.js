@@ -33,7 +33,7 @@ const getWeb3 = async onNetworkChange => {
       console.log(error)
       const errorMsg = `Wallet account rejected by user. You need to unlock your wallet.
         Please refresh the page and click 'Connect' button in your wallet popup.`
-      throw Error({ type: 'rejected', message: errorMsg })
+      throw Object({ type: 'rejected', message: errorMsg })
     }
   } else if (typeof web3 !== 'undefined') {
     web3 = new Web3(web3.currentProvider)
@@ -43,7 +43,7 @@ const getWeb3 = async onNetworkChange => {
     console.log('No web3 instance injected, using Local web3.')
     console.error('wallet not found')
     const errorMsg = ''
-    throw Error({ type: 'install', message: errorMsg })
+    throw Object({ type: 'install', message: errorMsg })
   }
 }
 
@@ -95,7 +95,7 @@ const processWeb3 = async web3 => {
   try {
     netId = await web3.eth.getChainId()
   } catch (error) {
-    throw Error({
+    throw Object({
       type: 'unlock',
       message:
         'Wallet does not support getting the Chain ID. Please use another wallet or specify a RPC url of a node that supports eth_chainId call'
@@ -109,7 +109,7 @@ const processWeb3 = async web3 => {
   const defaultAccount = accounts[0] || null
 
   if (defaultAccount === null) {
-    throw Error({ type: 'unlock', message: 'Please unlock your wallet and refresh the page' })
+    throw Object({ type: 'unlock', message: 'Please unlock your wallet and refresh the page' })
   }
 
   updateTitle(netIdName)
