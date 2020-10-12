@@ -22,7 +22,7 @@ export const BridgeForm = ({ reverse, currency, onTransfer, onInputChange, displ
           </div>
           <div>
             <button type="submit" className="bridge-form-button">
-              Transfer
+              {reverse ? 'Transfer' : 'Request'}
             </button>
           </div>
         </div>
