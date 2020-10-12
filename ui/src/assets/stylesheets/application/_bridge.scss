@@ -432,11 +432,12 @@
                           height: 60px;
 
                           @media screen and (max-width: $tablet-width) {
+                            border: none;
                             background-color: unset;
                             flex-direction: column;
                             padding: 0 0 0 0;
                             margin: 0 8px 0 8px;
-                            height: 40px;
+                            height: 90px;
                           }
                         }
                     }
@@ -449,6 +450,9 @@
                             background-color: rgba(251, 251, 252, 0.2);
                             border-radius: 3px 3px 0 0;
                             width: 100%;
+                            border: 1px solid #E6ECF1;
+                            box-sizing: border-box;
+                            border-radius: 2px;
                         }
                     }
                     &-input {
@@ -475,6 +479,8 @@
                         }
                         @media screen and (max-width: $tablet-width) {
                             font-size: 18px;
+                            flex: 1;
+                            padding-right: 16px;
                         }
                     }
                     &-label {
@@ -978,12 +984,14 @@
                 border-radius: 4px;
                 height: 60px;
                 @media screen and (max-width: $tablet-width) {
+                    border: none;
                     width: 100%;
                     background-color: unset;
                     flex-direction: column;
                     padding: 0;
                     margin: 0;
-                    height: 40px;
+                    height: 90px;
+                    justify-content: space-between;
                 }
                 &-input-container {
                     display: flex;
@@ -994,6 +1002,10 @@
                         background-color: rgba(251, 251, 252, 0.2);
                         border-radius: 3px 3px 0 0;
                         width: 100%;
+                        border: 1px solid #E6ECF1;
+                        box-sizing: border-box;
+                        border-radius: 2px;
+                        flex: 0;
                     }
                 }
                 &-input {
