@@ -344,16 +344,25 @@ class ForeignStore {
 
   @action
   async getUnexecutedTransactions() {
+    let unexecutedTransactions
     try {
       const response = await fetch(process.env.REACT_APP_COMMON_BRIDGE_MONITOR_URL)
       const data = await response.json()
-      this.unexecutedTransactions = data.onlyInHomeDeposits.map(tx => ({
+      unexecutedTransactions = data.onlyInHomeDeposits.map(tx => ({
         ...tx,
         value: fromDecimals(tx.value, this.tokenDecimals)
       }))
     } catch (e) {
       console.error(e)
-      this.unexecutedTransactions = []
+      unexecutedTransactions = []
+    } finally {
+      await this.web3Store.getWeb3Promise
+      this.unexecutedTransactions = unexecutedTransactions.filter(
+        tx => tx.recipient.toLowerCase() === this.web3Store.defaultAccount.address.toLowerCase()
+      )
+      if (this.unexecutedTransactions.length > 0) {
+        this.setShowExecuteSignaturesModal(true, true)
+      }
     }
   }
 
@@ -423,8 +432,8 @@ class ForeignStore {
   }
 
   @action
-  setShowExecuteSignaturesModal(show, withInput = false) {
-    this.executeSignaturesModal = { show, withInput }
+  setShowExecuteSignaturesModal(show, withTxsList = false) {
+    this.executeSignaturesModal = { show, withTxsList }
   }
 
   async executeSignatures() {

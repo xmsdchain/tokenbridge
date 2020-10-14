@@ -128,6 +128,7 @@ class Web3Store {
       if (accountUpdated) {
         await this.rootStore.foreignStore.getTokenBalance()
         await this.rootStore.homeStore.getBalance()
+        await this.rootStore.foreignStore.getUnexecutedTransactions()
         this.alertStore.setLoading(false)
       }
       if (this.rootStore.bridgeModeInitialized && this.rootStore.bridgeMode !== BRIDGE_MODES.ERC_TO_ERC) {

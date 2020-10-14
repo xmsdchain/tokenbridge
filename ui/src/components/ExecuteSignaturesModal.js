@@ -34,18 +34,7 @@ export default class extends React.Component {
   }
 
   render() {
-    const {
-      isOnTheRightNetwork,
-      foreignNetworkName,
-      withInput,
-      error,
-      account,
-      unexecutedTransactions,
-      currency
-    } = this.props
-    const unexecutedTransactionsOfUser = unexecutedTransactions.filter(
-      tx => tx.recipient.toLowerCase() === account.toLowerCase()
-    )
+    const { isOnTheRightNetwork, foreignNetworkName, withTxsList, error, unexecutedTransactions, currency } = this.props
     return (
       <div className="execute-signatures-modal">
         <div className="execute-signatures-modal-container">
@@ -54,12 +43,12 @@ export default class extends React.Component {
           </div>
           {isOnTheRightNetwork ? (
             <>
-              {withInput ? (
-                unexecutedTransactionsOfUser.length > 0 ? (
+              {withTxsList ? (
+                unexecutedTransactions.length > 0 ? (
                   <>
                     <div className="execute-signatures-transactions-list-container">
                       <div className="execute-signatures-transactions-list">
-                        {unexecutedTransactionsOfUser.map(tx => (
+                        {unexecutedTransactions.map(tx => (
                           <div key={tx.transactionHash} className="execute-signatures-transactions-list-item">
                             <span className="execute-signatures-transactions-list-item-hash">
                               {`${tx.transactionHash.substring(0, 6)}..${tx.transactionHash.substring(62)}`}
@@ -107,7 +96,7 @@ export default class extends React.Component {
               <p className="execute-signatures-switch-network-text">
                 Please switch the network in your wallet to <strong>{foreignNetworkName}</strong>
               </p>
-              {!withInput && (
+              {!withTxsList && (
                 <p className="execute-signatures-info-text">
                   <InfoIcon />
                   After you switch networks, you will complete a second transaction on {foreignNetworkName} to claim{' '}

@@ -417,7 +417,7 @@ export class Bridge extends React.Component {
           <ModalContainer
             showModal={foreignStore.executeSignaturesModal.show}
             hideModal={
-              foreignStore.executeSignaturesModal.withInput || this.state.executeSignaturesError
+              foreignStore.executeSignaturesModal.withTxsList || this.state.executeSignaturesError
                 ? this.onExecuteSignaturesModalClose
                 : null
             }
@@ -426,7 +426,7 @@ export class Bridge extends React.Component {
               foreignNetworkName={foreignStore.networkName}
               executeSignatures={() => foreignStore.executeSignatures()}
               getSignatures={txHash => homeStore.getSignatures(txHash)}
-              withInput={foreignStore.executeSignaturesModal.withInput}
+              withTxsList={foreignStore.executeSignaturesModal.withTxsList}
               error={this.state.executeSignaturesError}
               setError={this.setExecuteSignaturesError}
               isOnTheRightNetwork={web3Store.metamaskNet.id.toString() === web3Store.foreignNet.id.toString()}
