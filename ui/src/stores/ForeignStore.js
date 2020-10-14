@@ -130,6 +130,9 @@ class ForeignStore {
   @observable
   messageAndSignatures = null
 
+  @observable
+  unexecutedTransactions = []
+
   feeManager = {
     totalFeeDistributedFromSignatures: BN(0),
     totalFeeDistributedFromAffirmation: BN(0)
@@ -152,6 +155,7 @@ class ForeignStore {
     this.rootStore = rootStore
     this.waitingForConfirmation = new Set()
     this.setForeign()
+    this.getUnexecutedTransactions()
   }
 
   async setForeign() {
@@ -335,6 +339,21 @@ class ForeignStore {
       }
     } else {
       this.detectMediatorTransferFinished(this.latestBlockNumber - 50, 'latest')
+    }
+  }
+
+  @action
+  async getUnexecutedTransactions() {
+    try {
+      const response = await fetch(process.env.REACT_APP_COMMON_BRIDGE_MONITOR_URL)
+      const data = await response.json()
+      this.unexecutedTransactions = data.onlyInHomeDeposits.map(tx => ({
+        ...tx,
+        value: fromDecimals(tx.value, this.tokenDecimals)
+      }))
+    } catch (e) {
+      console.error(e)
+      this.unexecutedTransactions = []
     }
   }
 

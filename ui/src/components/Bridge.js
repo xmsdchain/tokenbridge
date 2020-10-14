@@ -430,6 +430,9 @@ export class Bridge extends React.Component {
               error={this.state.executeSignaturesError}
               setError={this.setExecuteSignaturesError}
               isOnTheRightNetwork={web3Store.metamaskNet.id.toString() === web3Store.foreignNet.id.toString()}
+              unexecutedTransactions={foreignStore.unexecutedTransactions}
+              account={web3Store.defaultAccount.address}
+              currency={foreignStore.symbol}
             />
           </ModalContainer>
         </div>

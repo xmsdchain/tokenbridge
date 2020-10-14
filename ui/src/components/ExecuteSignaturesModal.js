@@ -21,9 +21,8 @@ export default class extends React.Component {
     }
   }
 
-  handleSubmitTx = async () => {
+  handleSubmitTx = async txHash => {
     try {
-      const { txHash } = this.state
       await this.props.getSignatures(txHash)
       this.handleExecuteSignatures()
       this.props.setError(null)
@@ -34,7 +33,18 @@ export default class extends React.Component {
   }
 
   render() {
-    const { isOnTheRightNetwork, foreignNetworkName, withInput, error } = this.props
+    const {
+      isOnTheRightNetwork,
+      foreignNetworkName,
+      withInput,
+      error,
+      account,
+      unexecutedTransactions,
+      currency
+    } = this.props
+    const unexecutedTransactionsOfUser = unexecutedTransactions.filter(
+      tx => tx.recipient.toLowerCase() === account.toLowerCase()
+    )
     return (
       <div className="execute-signatures-modal">
         <div className="execute-signatures-modal-container">
@@ -46,35 +56,29 @@ export default class extends React.Component {
               {isOnTheRightNetwork ? (
                 <>
                   {withInput ? (
-                    <div className="execute-signatures-content-with-input">
-                      <span className="execute-signatures-description">
-                        Specify the transaction hash where xDai transfer happened or relayTokens method was called.{' '}
-                        <a href="https://www.xdaichain.com/for-users/converting-xdai-via-bridge/find-a-transaction-hash" target="_blank" rel="noopener noreferrer">
-                          How to find the transaction hash?
-                        </a>
-                      </span>
-                      <div className="execute-signatures-form">
-                        <div className="execute-signatures-form-input-container">
-                          <input
-                            onChange={this.handleInputChange}
-                            type="text"
-                            className="execute-signatures-form-input"
-                            placeholder="Transaction hash..."
-                          />
-                        </div>
-                        <div>
-                          <button className="execute-signatures-form-button" onClick={this.handleSubmitTx}>
+                    <div className="execute-signatures-transactions-list">
+                      {unexecutedTransactionsOfUser.map(tx => (
+                        <div key={tx.transactionHash} className="execute-signatures-transactions-list-item">
+                          <span className="execute-signatures-transactions-list-item-hash">
+                            {`${tx.transactionHash.substring(0, 6)}..${tx.transactionHash.substring(62)}`}
+                          </span>
+                          <span className="execute-signatures-transactions-list-item-value">
+                            {`${tx.value} ${currency}`}
+                          </span>
+                          <a
+                            className="execute-signatures-transactions-list-item-claim-button"
+                            onClick={() => this.handleSubmitTx(tx.transactionHash)}
+                          >
                             Claim
-                          </button>
+                          </a>
                         </div>
-                      </div>
+                      ))}
                     </div>
                   ) : (
                     <button onClick={this.handleExecuteSignatures} className="execute-signatures-confirm">
                       Claim
                     </button>
                   )}
-                  <span className="execute-signatures-error">{error}</span>
                 </>
               ) : (
                 <p className="transfer-description">
@@ -83,6 +87,7 @@ export default class extends React.Component {
               )}
             </div>
           </div>
+          {error && <span className="execute-signatures-error">{error}</span>}
         </div>
       </div>
     )

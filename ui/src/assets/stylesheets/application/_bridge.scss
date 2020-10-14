@@ -890,6 +890,7 @@
             justify-content: $transfer-alert-container-justify-content;
             padding: $transfer-alert-container-padding;
             width: $transfer-alert-container-width;
+            overflow: hidden;
 
             @media screen and (max-width: $tablet-width) {
                 padding: 10px 10px;
@@ -902,14 +903,48 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
+                overflow-y: scroll;
+                margin-top: 30px;
             }
 
             .execute-signatures-content {
-              flex: 1;
-              display: flex;
-              justify-content: center;
-              position: relative;
-          }
+                flex: 1;
+                display: flex;
+                justify-content: center;
+                position: relative;
+                height: 100%;
+            }
+
+            .execute-signatures-transactions-list {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .execute-signatures-transactions-list-item {
+                display: flex;
+                margin-bottom: 10px;
+                padding-bottom: 10px;
+                border-bottom: 1px solid #E6ECF1;
+
+                &:last-child {
+                    border-bottom: none;
+                    padding-bottom: 0;
+                }
+            }
+
+            .execute-signatures-transactions-list-item-hash {
+                width: 100px;
+            }
+
+            .execute-signatures-transactions-list-item-value {
+                flex: 1;
+                text-align: center;
+            }
+
+            .execute-signatures-transactions-list-item-claim-button {
+                cursor: pointer;
+            }
 
             .execute-signatures-content-with-input {
                 display: flex;
@@ -948,13 +983,6 @@
                 color: #ed4a4a;
                 font-size: 14px;
                 margin-top: 10px;
-                position: absolute;
-                bottom: -13px;
-                transform: translateY(100%);
-
-                @media screen and (max-width: $tablet-width) {
-                    bottom: -55px;
-                }
             }
 
             .execute-signatures-confirm {
