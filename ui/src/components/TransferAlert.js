@@ -2,6 +2,7 @@ import React from 'react'
 import arrowsIcon from '../assets/images/transfer-modal/icon-arrows@2x.png'
 import numeral from 'numeral'
 import { ArrowRight } from './icons/ArrowRight'
+import { InfoIcon } from './icons/Info'
 
 export const TransferAlert = ({
   onConfirmation,
@@ -65,11 +66,22 @@ export const TransferAlert = ({
           </div>
         </div>
         <p className="transfer-description" data-testid="transfer-description">
-          <strong>{fee && `Fee: ${fee.toString()}%`}</strong>
-          <br />
+          {fee && (
+            <>
+              <strong>Fee: {fee.toString()}%</strong>
+              <br />
+            </>
+          )}
           Please confirm that you would like to send {formattedFromAmount} {fromCurrency} from {from} to receive{' '}
           {formattedToAmount} {toCurrency} on {to}.
         </p>
+        {!reverse && (
+          <p className="transfer-description">
+            <InfoIcon />
+            The claim process requires 2 transactions, one on {from} and one on {to}. You will need some xDai and some{' '}
+            Eth to complete.
+          </p>
+        )}
         <div className="transfer-buttons">
           <button className="transfer-confirm" onClick={onConfirmation}>
             Continue
