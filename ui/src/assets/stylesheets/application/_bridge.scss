@@ -901,6 +901,9 @@
               flex: 1;
               overflow-y: scroll;
               margin-top: 30px;
+              @media screen and (max-width: $tablet-width) {
+                  margin-top: 20px;
+              }
           }
 
             .execute-signatures-content-container {
@@ -930,41 +933,54 @@
             }
 
             .execute-signatures-transactions-list-item-hash {
+                color: $modal-text-color;
+                font-size: 14px;
                 width: 100px;
             }
 
             .execute-signatures-transactions-list-item-value {
+                color: $modal-text-color;
+                font-size: 14px;
                 flex: 1;
                 text-align: center;
             }
 
             .execute-signatures-transactions-list-item-claim-button {
+                font-size: 14px;
                 cursor: pointer;
             }
 
             .execute-signatures-content-with-input {
                 display: flex;
                 flex-direction: column;
-
-                @media screen and (max-width: $tablet-width) {
-                    margin-top: -30px;
-                }
+                flex: 1;
+                justify-content: center;
             }
 
             .execute-signatures-title {
-              &-core,
-              &-classic {
-                display: none;
-              }
-              &-stake {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+                @media screen and (max-width: $tablet-width) {
+                    flex-direction: column;
+                    justify-content: flex-start;
+                    align-items: flex-start;
+                }
 
                 .execute-signatures-title-text {
-                  color: $modal-text-color;
-                  font-weight: bold;
-                  font-size: 20px;
-                  line-height: 23px;
+                    color: $modal-text-color;
+                    font-weight: bold;
+                    font-size: 20px;
+                    line-height: 23px;
                 }
-              }
+                .execute-signatures-switch-to-input {
+                    font-size: 14px;
+                    cursor: pointer;
+                    @media screen and (max-width: $tablet-width) {
+                        margin-top: 5px;
+                    }
+                }
             }
 
             .execute-signatures-switch-network-text {
@@ -1003,6 +1019,104 @@
 
                 &:hover {
                     background-color: $button-transfer-confirm-hover-background-color;
+                }
+            }
+            .execute-signatures-input-description {
+                color: $modal-text-color;
+                font-size: 14px;
+                line-height: 1.71;
+                margin-bottom: 10px;
+            }
+            .execute-signatures-form {
+                display: flex;
+                background-color: $bridge-textfield-background;
+                padding: 8px 8px 8px 0;
+                border: 1px solid #E6ECF1;
+                box-sizing: border-box;
+                border-radius: 4px;
+                height: 60px;
+                position: relative;
+
+                @media screen and (max-width: $tablet-width) {
+                    border: none;
+                    width: 100%;
+                    background-color: unset;
+                    flex-direction: column;
+                    padding: 0;
+                    margin: 0;
+                    height: 90px;
+                    justify-content: space-between;
+                }
+                &-input-container {
+                    display: flex;
+                    justify-content: space-between;
+                    flex: 1;
+
+                    @media screen and (max-width: $tablet-width) {
+                        background-color: rgba(251, 251, 252, 0.2);
+                        border-radius: 3px 3px 0 0;
+                        width: 100%;
+                        border: 1px solid #E6ECF1;
+                        box-sizing: border-box;
+                        border-radius: 2px;
+                        flex: 0;
+                    }
+                }
+                &-input {
+                    background-color: transparent;
+                    color: $bridge-textfield-color;
+                    font-size: 14px;
+                    height: $bridge-input-label-line-height;
+                    padding-left: 16px;
+                    padding-right: 16px;
+                    flex: 1;
+                    
+                    &::placeholder {
+                        color: $bridge-textfield-placeholder-color;
+                        font-size: 14px;
+
+                        @media screen and (max-width: $tablet-width) {
+                            font-size: 14px;
+                        }
+                    }
+
+                    &::placeholder {
+                        opacity: 0.3;
+                    }
+                    @media screen and (max-width: $tablet-width) {
+                        font-size: 14px;
+                        margin-bottom: 3px;
+                        height: 40px;
+                        width: 100%;
+                    }
+                }
+                &-button {
+                    background-color: $bridge-button-background-color;
+                    border-radius: $bridge-transfer-button-border-radius;
+                    color: $bridge-button-text-color;
+                    display: block;
+                    flex-shrink: 0;
+                    font-weight: 700;
+                    height: $bridge-transfer-button-height;
+                    text-decoration: none;
+                    width: $bridge-transfer-button-width;
+
+                    @media screen and (max-width: $tablet-width) {
+                        border-radius: $bridge-transfer-button-border-radius;
+                        width: 100%;
+                    }
+
+                    &:hover {
+                        background-color: $button-bridge-form-hover-background-color;
+                    }
+                }
+                .execute-signatures-input-error {
+                    color: #ed4a4a;
+                    font-size: 14px;
+                    margin-top: 10px;
+                    position: absolute;
+                    bottom: -10px;
+                    transform: translateY(100%);
                 }
             }
         }
