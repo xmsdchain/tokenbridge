@@ -345,7 +345,7 @@ class ForeignStore {
   @action
   async getUnexecutedTransactions(openPopup = true) {
     if (Object.keys(this.foreignBridge).length === 0) {
-      setTimeout(() => this.getUnexecutedTransactions(openPopup), 1000)
+      setTimeout(() => this.getUnexecutedTransactions(openPopup), 5000)
       return
     }
     try {
