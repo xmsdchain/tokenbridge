@@ -343,26 +343,30 @@ class ForeignStore {
   }
 
   @action
-  async getUnexecutedTransactions() {
-    let unexecutedTransactions
+  async getUnexecutedTransactions(openPopup = true) {
+    if (Object.keys(this.foreignBridge).length === 0) {
+      setTimeout(() => this.getUnexecutedTransactions(openPopup), 1000)
+      return
+    }
     try {
       const response = await fetch(process.env.REACT_APP_COMMON_BRIDGE_MONITOR_URL)
       const data = await response.json()
-      unexecutedTransactions = data.onlyInHomeDeposits.map(tx => ({
-        ...tx,
-        value: fromDecimals(tx.value, this.tokenDecimals)
-      }))
-    } catch (e) {
-      console.error(e)
-      unexecutedTransactions = []
-    } finally {
       await this.web3Store.getWeb3Promise
-      this.unexecutedTransactions = unexecutedTransactions.filter(
-        tx => tx.recipient.toLowerCase() === this.web3Store.defaultAccount.address.toLowerCase()
-      )
-      if (this.unexecutedTransactions.length > 0) {
+      this.unexecutedTransactions = (await Promise.all(
+        data.onlyInHomeDeposits
+          .map(tx => ({ ...tx, value: fromDecimals(tx.value, this.tokenDecimals) }))
+          .filter(tx => tx.recipient.toLowerCase() === this.web3Store.defaultAccount.address.toLowerCase())
+          .map(async tx => {
+            const executed = await wasMessageRelayed(this.foreignBridge, tx.transactionHash)
+            return { ...tx, executed }
+          })
+      )).filter(tx => !tx.executed)
+      if (openPopup && this.unexecutedTransactions.length > 0) {
         this.setShowExecuteSignaturesModal(true, true)
       }
+    } catch (e) {
+      console.error(e)
+      this.unexecutedTransactions = []
     }
   }
 
@@ -460,6 +464,7 @@ class ForeignStore {
         this.alertStore.setLoadingStepIndex(1)
       })
       .on('receipt', receipt => {
+        this.getUnexecutedTransactions(false)
         this.alertStore.setBlockConfirmations(1)
         const txHash = receipt.transactionHash
         const urlExplorer = this.getExplorerTxUrl(txHash)
