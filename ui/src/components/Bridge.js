@@ -433,6 +433,7 @@ export class Bridge extends React.Component {
               unexecutedTransactions={foreignStore.unexecutedTransactions}
               account={web3Store.defaultAccount.address}
               currency={foreignStore.symbol}
+              getExplorerTxUrl={txHash => homeStore.getExplorerTxUrl(txHash)}
             />
           </ModalContainer>
         </div>

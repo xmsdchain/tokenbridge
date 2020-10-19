@@ -40,7 +40,15 @@ export default class extends React.Component {
   }
 
   render() {
-    const { isOnTheRightNetwork, foreignNetworkName, withTxsList, error, unexecutedTransactions, currency } = this.props
+    const {
+      isOnTheRightNetwork,
+      foreignNetworkName,
+      withTxsList,
+      error,
+      unexecutedTransactions,
+      currency,
+      getExplorerTxUrl
+    } = this.props
     return (
       <div className="execute-signatures-modal">
         <div className="execute-signatures-modal-container">
@@ -101,9 +109,14 @@ export default class extends React.Component {
                             <div className="execute-signatures-transactions-list">
                               {unexecutedTransactions.map(tx => (
                                 <div key={tx.transactionHash} className="execute-signatures-transactions-list-item">
-                                  <span className="execute-signatures-transactions-list-item-hash">
+                                  <a
+                                    className="execute-signatures-transactions-list-item-hash"
+                                    href={getExplorerTxUrl(tx.transactionHash)}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                  >
                                     {`${tx.transactionHash.substring(0, 6)}..${tx.transactionHash.substring(62)}`}
-                                  </span>
+                                  </a>
                                   <span className="execute-signatures-transactions-list-item-value">
                                     {`${tx.value} ${currency}`}
                                   </span>
