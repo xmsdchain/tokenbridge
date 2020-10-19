@@ -442,6 +442,8 @@ class ForeignStore {
     if (executed) {
       throw Error('This withdrawal request was already executed.')
     }
+    this.setShowExecuteSignaturesModal(false)
+    this.alertStore.setLoading(true)
     const data = this.foreignBridge.methods.executeSignatures(message, signatures).encodeABI()
     const gasPrice = this.rootStore.gasPriceStore.gasPriceInHex
     const to = this.COMMON_FOREIGN_BRIDGE_ADDRESS
@@ -452,11 +454,9 @@ class ForeignStore {
       .sendTransaction({ to, from, gasPrice, gas, value, data, chainId: this.web3Store.foreignNet.id })
       .on('transactionHash', hash => {
         console.log('txHash', hash)
-        this.setShowExecuteSignaturesModal(false)
         this.messageAndSignatures = null
         this.alertStore.setRequiredBlockConfirmations(1)
         this.alertStore.setBlockConfirmations(0)
-        this.alertStore.setLoading(true)
         this.alertStore.setLoadingStepIndex(1)
       })
       .on('receipt', receipt => {
