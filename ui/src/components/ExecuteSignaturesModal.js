@@ -69,6 +69,10 @@ export default class extends React.Component {
                           How to find the transaction hash?
                         </a>
                       </span>
+                      <span className="execute-signatures-input-description">
+                        <InfoIcon />
+                        You need some ETH to claim.
+                      </span>
                       <div className="execute-signatures-form">
                         <div className="execute-signatures-form-input-container">
                           <input
@@ -113,6 +117,10 @@ export default class extends React.Component {
                               ))}
                             </div>
                           </div>
+                          <p className="execute-signatures-info-text" style={{ textAlign: 'left' }}>
+                            <InfoIcon />
+                            You need some ETH to claim.
+                          </p>
                           {error && <span className="execute-signatures-error">{error}</span>}
                         </>
                       ) : (
@@ -146,13 +154,17 @@ export default class extends React.Component {
               <p className="execute-signatures-switch-network-text">
                 Please switch the network in your wallet to <strong>{foreignNetworkName}</strong>
               </p>
-              {!withTxsList && (
-                <p className="execute-signatures-info-text">
-                  <InfoIcon />
-                  After you switch networks, you will complete a second transaction on {foreignNetworkName} to claim{' '}
-                  your {currency} tokens.
-                </p>
-              )}
+              <p className="execute-signatures-info-text">
+                <InfoIcon />
+                {withTxsList ? (
+                  <span>You have unconfirmed transactions, change the network to get a list of them.</span>
+                ) : (
+                  <span>
+                    After you switch networks, you will complete a second transaction on {foreignNetworkName} to claim
+                    your {currency} tokens.
+                  </span>
+                )}
+              </p>
             </div>
           )}
         </div>
