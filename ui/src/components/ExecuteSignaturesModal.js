@@ -167,17 +167,20 @@ export default class extends React.Component {
               <p className="execute-signatures-switch-network-text">
                 Please switch the network in your wallet to <strong>{foreignNetworkName}</strong>
               </p>
-              <p className="execute-signatures-info-text">
-                <InfoIcon />
-                {withTxsList ? (
-                  <span>You have unconfirmed transactions, change the network to get a list of them.</span>
-                ) : (
-                  <span>
-                    After you switch networks, you will complete a second transaction on {foreignNetworkName} to claim
-                    your {currency} tokens.
-                  </span>
+              {!withTxsList && (
+                <p className="execute-signatures-info-text">
+                  <InfoIcon />
+                  After you switch networks, you will complete a second transaction on {foreignNetworkName} to claim
+                  your {currency} tokens.
+                </p>
+              )}
+              {withTxsList &&
+                unexecutedTransactions.length > 0 && (
+                  <p className="execute-signatures-info-text">
+                    <InfoIcon />
+                    You have unconfirmed transactions, change the network to get a list of them.
+                  </p>
                 )}
-              </p>
             </div>
           )}
         </div>
