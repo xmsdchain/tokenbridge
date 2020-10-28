@@ -23,7 +23,11 @@ const getWeb3 = async onNetworkChange => {
   updateTitle()
   if (ethereum) {
     ethereum.autoRefreshOnNetworkChange = false
-    ethereum.once('chainChanged', onNetworkChange)
+    if (ethereum.once) {
+      ethereum.once('chainChanged', onNetworkChange)
+    } else if (ethereum.on) {
+      ethereum.on('chainChanged', onNetworkChange)
+    }
     web3 = new Web3(ethereum)
     try {
       // Request account access
