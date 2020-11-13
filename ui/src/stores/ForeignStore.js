@@ -353,7 +353,7 @@ class ForeignStore {
       const data = await response.json()
       await this.web3Store.getWeb3Promise
       this.unexecutedTransactions = (await Promise.all(
-        data.onlyInHomeDeposits
+        data.unclaimedHomeDeposits
           .map(tx => ({ ...tx, value: fromDecimals(tx.value, this.tokenDecimals) }))
           .filter(tx => tx.recipient.toLowerCase() === this.web3Store.defaultAccount.address.toLowerCase())
           .map(async tx => {
