@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
+import gtag, { install } from 'ga-gtag'
+
+install(process.env.REACT_APP_UI_GA_MEASUREMENT_ID)
 
 @inject('RootStore')
 @observer
@@ -13,6 +16,7 @@ export default class NetworkSelect extends Component {
     const newNetworkName = e.target.innerHTML
     web3Store.setSelectedNetwork(newNetworkName)
     this.hideList()
+    gtag('event', 'click')
   }
 
   displayList = () => {

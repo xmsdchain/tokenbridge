@@ -9,6 +9,7 @@
     "date-fns": "^2.13.0",
     "dotenv": "^7.0.0",
     "fs-extra": "^5.0.0",
+    "ga-gtag": "^1.0.1",
     "mobx": "^4.0.2",
     "mobx-react": "^5.0.0",
     "node-sass-chokidar": "^1.0.1",
