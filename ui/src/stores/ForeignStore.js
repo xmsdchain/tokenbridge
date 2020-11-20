@@ -453,8 +453,16 @@ class ForeignStore {
     const to = this.COMMON_FOREIGN_BRIDGE_ADDRESS
     const from = this.web3Store.defaultAccount.address
     const value = '0x00'
+    let gas
+    try {
+      gas = await estimateGas(this.web3Store.injectedWeb3, to, '0x00', from, value, data)
+    } catch (error) {
+      this.alertStore.setLoading(false)
+      this.alertStore.pushError('Gas estimation failed')
+      return
+    }
     this.web3Store.injectedWeb3.eth
-      .sendTransaction({ to, from, gasPrice, value, data, chainId: this.web3Store.foreignNet.id })
+      .sendTransaction({ to, from, gasPrice, gas, value, data, chainId: this.web3Store.foreignNet.id })
       .on('transactionHash', hash => {
         console.log('txHash', hash)
         this.messageAndSignatures = null
