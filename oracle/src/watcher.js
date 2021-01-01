@@ -3,7 +3,7 @@ const path = require('path')
 const { connectWatcherToQueue, connection } = require('./services/amqpClient')
 const { redis } = require('./services/redisClient')
 const logger = require('./services/logger')
-const { getBlockNumber, getRequiredBlockConfirmations, getEvents } = require('./tx/web3')
+const { getBlock, getBlockNumber, getRequiredBlockConfirmations, getEvents } = require('./tx/web3')
 const { checkHTTPS, watchdog } = require('./utils/utils')
 const { EXIT_CODES } = require('./utils/constants')
 const { isChaiTokenEnabled } = require('./utils/chaiUtils')
@@ -22,12 +22,14 @@ const processTransfers = require('./events/processTransfers')(config)
 const processAMBSignatureRequests = require('./events/processAMBSignatureRequests')(config)
 const processAMBCollectedSignatures = require('./events/processAMBCollectedSignatures')(config)
 const processAMBAffirmationRequests = require('./events/processAMBAffirmationRequests')(config)
+const processAMBInformationRequests = require('./events/processAMBInformationRequests')(config)
 
 const { getTokensState } = require('./utils/tokenState')
 
 const { web3, bridgeContract, eventContract, startBlock, pollingInterval, chain } = config.main
 const lastBlockRedisKey = `${config.id}:lastProcessedBlock`
 let lastProcessedBlock = Math.max(startBlock - 1, 0)
+let nextPollingInterval = pollingInterval
 
 async function initialize() {
   try {
@@ -65,7 +67,8 @@ async function runMain({ sendToQueue, sendToWorker }) {
 
   setTimeout(() => {
     runMain({ sendToQueue, sendToWorker })
-  }, pollingInterval)
+  }, nextPollingInterval)
+  nextPollingInterval = pollingInterval
 }
 
 async function getLastProcessedBlock() {
@@ -141,7 +144,7 @@ async function main({ sendToQueue, sendToWorker }) {
   try {
     await checkConditions()
 
-    const lastBlockToProcess = await getLastBlockToProcess(web3, bridgeContract)
+    let lastBlockToProcess = await getLastBlockToProcess(web3, bridgeContract)
 
     if (lastBlockToProcess <= lastProcessedBlock) {
       logger.debug('All blocks already processed')
@@ -151,7 +154,7 @@ async function main({ sendToQueue, sendToWorker }) {
     const fromBlock = lastProcessedBlock + 1
     const toBlock = lastBlockToProcess
 
-    const events = await getEvents({
+    let events = await getEvents({
       contract: eventContract,
       event: config.event,
       fromBlock,
@@ -165,7 +168,34 @@ async function main({ sendToQueue, sendToWorker }) {
         await sendToWorker({ blockNumber: toBlock })
       }
 
-      const job = await processEvents(events)
+      let job
+
+      // for async information requests, requests are processed in batch, only if they are located a single block
+      // this brings two benefits:
+      // 1) corresponding foreign block for specific timestamp is searched only once per events batch
+      // 2) watcher can carefully wait until corresponding foreign block has enough confirmations
+      if (config.id === 'amb-information-request') {
+        const { foreign } = config
+
+        events = events.sort(event => event.blockNumber)
+        const batchBlockNumber = events[0].blockNumber
+        const nextBatchBlockNumber = events.find(event => event.blockNumber > batchBlockNumber)
+        lastBlockToProcess = nextBatchBlockNumber ? nextBatchBlockNumber - 1 : batchBlockNumber
+        events = events.filter(event => event.blockNumber === batchBlockNumber)
+
+        const lastForeignBlockNumber = await getLastBlockToProcess(foreign.web3, foreign.bridgeContract)
+        const lastForeignBlock = await getBlock(foreign.web3, lastForeignBlockNumber)
+
+        const remainingDelay = events[0].timestamp - lastForeignBlock.timestamp
+        if (remainingDelay > 0) {
+          logger.debug(`Not enough foreign block confirmations, waiting ${remainingDelay} seconds`)
+          nextPollingInterval = Math.max(pollingInterval, remainingDelay * 1000)
+        }
+
+        job = await processAMBInformationRequests(events, lastForeignBlock)
+      } else {
+        job = await processEvents(events)
+      }
       logger.info('Transactions to send:', job.length)
 
       if (job.length) {
