@@ -3,7 +3,7 @@ const baseConfig = require('./base.config')
 const { web3Home, web3HomeRedundant, web3HomeFallback } = require('../src/services/web3')
 
 module.exports = {
-  ...baseConfig.bridgeConfig,
+  ...baseConfig,
   queue: 'home-prioritized',
   oldQueue: 'home',
   id: 'home',

@@ -1,6 +1,5 @@
 require('../env')
 
-const { toBN } = require('web3').utils
 const {
   BRIDGE_MODES,
   HOME_NATIVE_TO_ERC_ABI,
@@ -15,13 +14,24 @@ const {
 const { web3Home, web3Foreign } = require('../src/services/web3')
 const { privateKeyToAddress } = require('../src/utils/utils')
 
-const { ORACLE_VALIDATOR_ADDRESS, ORACLE_VALIDATOR_ADDRESS_PRIVATE_KEY } = process.env
+const {
+  ORACLE_BRIDGE_MODE,
+  ORACLE_VALIDATOR_ADDRESS,
+  ORACLE_VALIDATOR_ADDRESS_PRIVATE_KEY,
+  ORACLE_MAX_PROCESSING_TIME,
+  COMMON_HOME_BRIDGE_ADDRESS,
+  COMMON_FOREIGN_BRIDGE_ADDRESS,
+  ORACLE_HOME_RPC_POLLING_INTERVAL,
+  ORACLE_FOREIGN_RPC_POLLING_INTERVAL,
+  ORACLE_HOME_START_BLOCK,
+  ORACLE_FOREIGN_START_BLOCK
+} = process.env
 
 let homeAbi
 let foreignAbi
 let id
 
-switch (process.env.ORACLE_BRIDGE_MODE) {
+switch (ORACLE_BRIDGE_MODE) {
   case BRIDGE_MODES.NATIVE_TO_ERC:
     homeAbi = HOME_NATIVE_TO_ERC_ABI
     foreignAbi = FOREIGN_NATIVE_TO_ERC_ABI
@@ -44,7 +54,7 @@ switch (process.env.ORACLE_BRIDGE_MODE) {
     break
   default:
     if (process.env.NODE_ENV !== 'test') {
-      throw new Error(`Bridge Mode: ${process.env.ORACLE_BRIDGE_MODE} not supported.`)
+      throw new Error(`Bridge Mode: ${ORACLE_BRIDGE_MODE} not supported.`)
     } else {
       homeAbi = HOME_ERC_TO_NATIVE_ABI
       foreignAbi = FOREIGN_ERC_TO_NATIVE_ABI
@@ -52,51 +62,38 @@ switch (process.env.ORACLE_BRIDGE_MODE) {
     }
 }
 
-let maxProcessingTime = null
-if (String(process.env.ORACLE_MAX_PROCESSING_TIME) === '0') {
-  maxProcessingTime = 0
-} else if (!process.env.ORACLE_MAX_PROCESSING_TIME) {
-  maxProcessingTime =
-    4 * Math.max(process.env.ORACLE_HOME_RPC_POLLING_INTERVAL, process.env.ORACLE_FOREIGN_RPC_POLLING_INTERVAL)
-} else {
-  maxProcessingTime = Number(process.env.ORACLE_MAX_PROCESSING_TIME)
-}
-
-const bridgeConfig = {
-  homeBridgeAddress: process.env.COMMON_HOME_BRIDGE_ADDRESS,
-  homeBridgeAbi: homeAbi,
-  foreignBridgeAddress: process.env.COMMON_FOREIGN_BRIDGE_ADDRESS,
-  foreignBridgeAbi: foreignAbi,
-  eventFilter: {},
-  validatorAddress: ORACLE_VALIDATOR_ADDRESS || privateKeyToAddress(ORACLE_VALIDATOR_ADDRESS_PRIVATE_KEY),
-  maxProcessingTime
-}
-
+const homeContract = new web3Home.eth.Contract(homeAbi, COMMON_HOME_BRIDGE_ADDRESS)
 const homeConfig = {
   chain: 'home',
-  eventContractAddress: process.env.COMMON_HOME_BRIDGE_ADDRESS,
-  eventAbi: homeAbi,
-  bridgeContractAddress: process.env.COMMON_HOME_BRIDGE_ADDRESS,
-  bridgeAbi: homeAbi,
-  pollingInterval: process.env.ORACLE_HOME_RPC_POLLING_INTERVAL,
-  startBlock: toBN(process.env.ORACLE_HOME_START_BLOCK || 0),
-  web3: web3Home
+  bridgeAddress: COMMON_HOME_BRIDGE_ADDRESS,
+  bridgeABI: homeAbi,
+  pollingInterval: parseInt(ORACLE_HOME_RPC_POLLING_INTERVAL, 10),
+  startBlock: parseInt(ORACLE_HOME_START_BLOCK, 10) || 0,
+  web3: web3Home,
+  bridgeContract: homeContract,
+  eventContract: homeContract
 }
 
+const foreignContract = new web3Foreign.eth.Contract(foreignAbi, COMMON_FOREIGN_BRIDGE_ADDRESS)
 const foreignConfig = {
   chain: 'foreign',
-  eventContractAddress: process.env.COMMON_FOREIGN_BRIDGE_ADDRESS,
-  eventAbi: foreignAbi,
-  bridgeContractAddress: process.env.COMMON_FOREIGN_BRIDGE_ADDRESS,
-  bridgeAbi: foreignAbi,
-  pollingInterval: process.env.ORACLE_FOREIGN_RPC_POLLING_INTERVAL,
-  startBlock: toBN(process.env.ORACLE_FOREIGN_START_BLOCK || 0),
-  web3: web3Foreign
+  bridgeAddress: COMMON_FOREIGN_BRIDGE_ADDRESS,
+  bridgeABI: foreignAbi,
+  pollingInterval: parseInt(ORACLE_FOREIGN_RPC_POLLING_INTERVAL, 10),
+  startBlock: parseInt(ORACLE_FOREIGN_START_BLOCK, 10) || 0,
+  web3: web3Foreign,
+  bridgeContract: foreignContract,
+  eventContract: foreignContract
 }
 
+const maxProcessingTime =
+  parseInt(ORACLE_MAX_PROCESSING_TIME, 10) || 4 * Math.max(homeConfig.pollingInterval, foreignConfig.pollingInterval)
+
 module.exports = {
-  bridgeConfig,
-  homeConfig,
-  foreignConfig,
+  eventFilter: {},
+  validatorAddress: ORACLE_VALIDATOR_ADDRESS || privateKeyToAddress(ORACLE_VALIDATOR_ADDRESS_PRIVATE_KEY),
+  maxProcessingTime,
+  home: homeConfig,
+  foreign: foreignConfig,
   id
 }

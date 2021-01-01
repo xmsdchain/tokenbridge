@@ -11,8 +11,8 @@ if (!workerRequired) {
 }
 
 module.exports = {
-  ...baseConfig.bridgeConfig,
-  ...baseConfig.foreignConfig,
+  ...baseConfig,
+  main: baseConfig.foreign,
   workerQueue: 'convert-to-chai',
   senderQueue: 'foreign-prioritized',
   name: `worker-${id}`,

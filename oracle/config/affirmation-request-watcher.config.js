@@ -21,8 +21,8 @@ if (baseConfig.id === 'erc-erc' && initialChecks.foreignERC === ERC_TYPES.ERC677
 const id = `${baseConfig.id}-affirmation-request`
 
 module.exports = {
-  ...baseConfig.bridgeConfig,
-  ...baseConfig.foreignConfig,
+  ...baseConfig,
+  main: baseConfig.foreign,
   event: 'UserRequestForAffirmation',
   queue: 'home-prioritized',
   name: `watcher-${id}`,

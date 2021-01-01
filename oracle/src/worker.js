@@ -8,13 +8,13 @@ const config = require(path.join('../config/', process.argv[2]))
 
 const convertToChai = require('./workers/convertToChai')(config)
 
-const web3Instance = config.web3
+const { web3 } = config.main
 
 async function initialize() {
   try {
     const checkHttps = checkHTTPS(process.env.ORACLE_ALLOW_HTTP_FOR_RPC, logger)
 
-    web3Instance.currentProvider.urls.forEach(checkHttps(config.chain))
+    web3.currentProvider.urls.forEach(checkHttps(config.chain))
 
     connectWorkerToQueue({
       queueName: config.workerQueue,
