@@ -4,6 +4,7 @@
     - docker-compose
     - docker-compose-transfer
     - docker-compose-erc-native
+    - docker-compose-amb
   loop_control:
     loop_var: file
 
