@@ -95,7 +95,7 @@ jobs:
       - name: Evaluate e2e docker images tags
         run: |
           git submodule status > submodule.status
-          echo "E2E_TAG=${{ hashFiles('yarn.lock', 'package.json', 'submodule.status', 'Dockerfile.e2e', 'commons', 'oracle-e2e', 'monitor-e2e') }}" >> $GITHUB_ENV
+          echo "E2E_TAG=${{ hashFiles('yarn.lock', 'package.json', 'submodule.status', 'Dockerfile.e2e', 'commons', 'oracle-e2e', 'monitor-e2e', 'e2e-commons') }}" >> $GITHUB_ENV
           echo "ORACLE_TAG=${{ hashFiles('yarn.lock', 'package.json', 'submodule.status', 'commons', 'oracle') }}" >> $GITHUB_ENV
           echo "MONITOR_TAG=${{ hashFiles('yarn.lock', 'package.json', 'submodule.status', 'commons', 'monitor') }}" >> $GITHUB_ENV
           echo "UI_TAG=${{ hashFiles('yarn.lock', 'package.json', 'submodule.status', 'commons', 'ui') }}" >> $GITHUB_ENV
@@ -162,7 +162,7 @@ jobs:
       - name: Evaluate e2e docker images tags
         run: |
           git submodule status > submodule.status
-          echo "E2E_TAG=${{ hashFiles('yarn.lock', 'package.json', 'submodule.status', 'Dockerfile.e2e', 'commons', 'oracle-e2e', 'monitor-e2e') }}" >> $GITHUB_ENV
+          echo "E2E_TAG=${{ hashFiles('yarn.lock', 'package.json', 'submodule.status', 'Dockerfile.e2e', 'commons', 'oracle-e2e', 'monitor-e2e', 'e2e-commons') }}" >> $GITHUB_ENV
           echo "ORACLE_TAG=${{ hashFiles('yarn.lock', 'package.json', 'submodule.status', 'commons', 'oracle') }}" >> $GITHUB_ENV
           echo "MONITOR_TAG=${{ hashFiles('yarn.lock', 'package.json', 'submodule.status', 'commons', 'monitor') }}" >> $GITHUB_ENV
           echo "UI_TAG=${{ hashFiles('yarn.lock', 'package.json', 'submodule.status', 'commons', 'ui') }}" >> $GITHUB_ENV
@@ -227,7 +227,7 @@ jobs:
       - name: Evaluate e2e docker images tags
         run: |
           git submodule status > submodule.status
-          echo "E2E_TAG=${{ hashFiles('yarn.lock', 'package.json', 'submodule.status', 'Dockerfile.e2e', 'commons', 'oracle-e2e', 'monitor-e2e') }}" >> $GITHUB_ENV
+          echo "E2E_TAG=${{ hashFiles('yarn.lock', 'package.json', 'submodule.status', 'Dockerfile.e2e', 'commons', 'oracle-e2e', 'monitor-e2e', 'e2e-commons') }}" >> $GITHUB_ENV
           echo "ORACLE_TAG=${{ hashFiles('yarn.lock', 'package.json', 'submodule.status', 'commons', 'oracle') }}" >> $GITHUB_ENV
           echo "MONITOR_TAG=${{ hashFiles('yarn.lock', 'package.json', 'submodule.status', 'commons', 'monitor') }}" >> $GITHUB_ENV
           echo "UI_TAG=${{ hashFiles('yarn.lock', 'package.json', 'submodule.status', 'commons', 'ui') }}" >> $GITHUB_ENV
