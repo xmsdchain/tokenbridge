@@ -18,11 +18,16 @@ homeWeb3.eth.accounts.wallet.add(validator.privateKey)
 foreignWeb3.eth.accounts.wallet.add(user.privateKey)
 foreignWeb3.eth.accounts.wallet.add(validator.privateKey)
 
-const homeBox = new homeWeb3.eth.Contract(BOX_ABI, amb.homeBox)
-const blockHomeBox = new homeWeb3.eth.Contract(BOX_ABI, amb.blockedHomeBox)
-const foreignBox = new foreignWeb3.eth.Contract(BOX_ABI, amb.foreignBox)
-const homeBridge = new homeWeb3.eth.Contract(HOME_AMB_ABI, COMMON_HOME_BRIDGE_ADDRESS)
-const foreignBridge = new foreignWeb3.eth.Contract(FOREIGN_AMB_ABI, COMMON_FOREIGN_BRIDGE_ADDRESS)
+const opts = {
+  from: user.address,
+  gas: 400000,
+  gasPrice: '1'
+}
+const homeBox = new homeWeb3.eth.Contract(BOX_ABI, amb.homeBox, opts)
+const blockHomeBox = new homeWeb3.eth.Contract(BOX_ABI, amb.blockedHomeBox, opts)
+const foreignBox = new foreignWeb3.eth.Contract(BOX_ABI, amb.foreignBox, opts)
+const homeBridge = new homeWeb3.eth.Contract(HOME_AMB_ABI, COMMON_HOME_BRIDGE_ADDRESS, opts)
+const foreignBridge = new foreignWeb3.eth.Contract(FOREIGN_AMB_ABI, COMMON_FOREIGN_BRIDGE_ADDRESS, opts)
 
 describe('arbitrary message bridging', () => {
   let requiredSignatures = 1
@@ -63,10 +68,7 @@ describe('arbitrary message bridging', () => {
 
         await homeBox.methods
           .setValueOnOtherNetwork(newValue, amb.home, amb.foreignBox)
-          .send({
-            from: user.address,
-            gas: '400000'
-          })
+          .send()
           .catch(e => {
             console.error(e)
           })
@@ -95,10 +97,7 @@ describe('arbitrary message bridging', () => {
 
           await blockHomeBox.methods
             .setValueOnOtherNetwork(newValue, amb.home, amb.foreignBox)
-            .send({
-              from: user.address,
-              gas: '400000'
-            })
+            .send()
             .catch(e => {
               console.error(e)
             })
@@ -134,10 +133,7 @@ describe('arbitrary message bridging', () => {
 
         await homeBox.methods
           .setValueOnOtherNetworkUsingManualLane(newValue, amb.home, amb.foreignBox)
-          .send({
-            from: user.address,
-            gas: '400000'
-          })
+          .send()
           .catch(e => {
             console.error(e)
           })
@@ -170,10 +166,7 @@ describe('arbitrary message bridging', () => {
 
         await foreignBox.methods
           .setValueOnOtherNetwork(newValue, amb.foreign, amb.homeBox)
-          .send({
-            from: user.address,
-            gas: '400000'
-          })
+          .send()
           .catch(e => {
             console.error(e)
           })
@@ -197,10 +190,7 @@ describe('arbitrary message bridging', () => {
 
       await homeBox.methods
         .getValueFromTheOtherNetwork(amb.foreign, amb.foreignBox)
-        .send({
-          from: user.address,
-          gas: '400000'
-        })
+        .send()
         .catch(e => {
           console.error(e)
         })
