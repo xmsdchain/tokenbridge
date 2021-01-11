@@ -1,6 +1,11 @@
 ---
 driver:
   name: docker
+lint: |
+  set -e
+  yamllint -d '{ignore: "../../hosts.yml"}' .
+  ansible-lint -r bug
+  flake8
 platforms:
   - name: repo-host
     image: ubuntu:16.04
@@ -22,6 +27,7 @@ verifier:
 scenario:
   name: repo
   test_sequence:
+    - lint
     - destroy
     - create
     - prepare

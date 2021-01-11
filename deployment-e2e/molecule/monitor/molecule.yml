@@ -3,12 +3,11 @@ dependency:
   name: galaxy
 driver:
   name: docker
-lint:
-  name: yamllint
-  enabled: True
-  options:
-    config-data:
-      ignore: ../../hosts.yml
+lint: |
+  set -e
+  yamllint -d '{ignore: "../../hosts.yml"}' .
+  ansible-lint -r bug
+  flake8
 platforms:
   - name: monitor-host
     groups:
@@ -22,11 +21,6 @@ platforms:
       - /var/run/docker.sock:/var/run/docker.sock
 provisioner:
   name: ansible
-  lint:
-    name: ansible-lint
-    enabled: True
-    options:
-      r: ["bug"]
   playbooks:
     prepare: ../prepare.yml
     converge: ./converge.yml
@@ -37,8 +31,6 @@ provisioner:
         syslog_server_port: "udp://127.0.0.1:514"
 verifier:
   name: testinfra
-  lint:
-    name: flake8
   additional_files_or_dirs:
     - ../../tests/*
 scenario:

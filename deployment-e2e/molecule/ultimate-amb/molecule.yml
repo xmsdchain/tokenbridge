@@ -1,6 +1,11 @@
 ---
 driver:
   name: docker
+lint: |
+  set -e
+  yamllint -d '{ignore: "../../hosts.yml"}' .
+  ansible-lint -r bug
+  flake8
 platforms:
   - name: oracle-amb-host
     groups:
@@ -25,11 +30,10 @@ provisioner:
         ORACLE_VALIDATOR_ADDRESS_PRIVATE_KEY: "8e829f695aed89a154550f30262f1529582cc49dc30eff74a6b491359e0230f9"
 verifier:
   name: testinfra
-  lint:
-    name: flake8
 scenario:
   name: ultimate-amb
   test_sequence:
+    - lint
     - cleanup
     - destroy
     - syntax

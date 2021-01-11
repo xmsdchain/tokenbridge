@@ -1,6 +1,11 @@
 ---
 driver:
   name: docker
+lint: |
+  set -e
+  yamllint -d '{ignore: "../../hosts.yml"}' .
+  ansible-lint -r bug
+  flake8
 platforms:
   - name: oracle-amb-host
     groups:
@@ -39,11 +44,10 @@ provisioner:
         COMMON_FOREIGN_RPC_URL: "http://localhost:8542"
 verifier:
   name: testinfra
-  lint:
-    name: flake8
 scenario:
   name: ultimate-amb-stake-erc-to-erc
   test_sequence:
+    - lint
     - cleanup
     - destroy
     - syntax

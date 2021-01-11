@@ -16,6 +16,7 @@ testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
 def test_non_existing_node_modules(host, path):
     assert not host.file(path).exists
 
+
 @pytest.mark.parametrize("path", [
     ("/home/poadocker/bridge/.git")
 ])
