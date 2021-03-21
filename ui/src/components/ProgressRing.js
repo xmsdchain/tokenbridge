@@ -20,7 +20,7 @@ export class ProgressRing extends Component {
     const strokeDashoffset = circumference - (progress / 100) * circumference
     const confirmations = hideConfirmationNumber ? '' : `${confirmationNumber}/${requiredBlockConfirmations}`
     const strokeColor = REACT_APP_UI_STYLES === 'stake' ? '#E6ECF1' : '#7b5ab2'
-    const strokeProgressColor = REACT_APP_UI_STYLES === 'stake' ? '#4DA9A6' : '#60dc97'
+    const strokeProgressColor = REACT_APP_UI_STYLES === 'stake' ? '#2b2b2b;' : '#60dc97'
 
     let textParams
     if (REACT_APP_UI_STYLES === 'stake') {

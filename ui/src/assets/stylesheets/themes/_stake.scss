@@ -9,11 +9,11 @@ $secondary-color-dark: #64a231;
 $tertiary-color: #ffaa07;
 $danger-color: #f13662;
 $blue-color: #3ab9fe;
-$base-button-bg-color: #4DA9A6;
+$base-button-bg-color: #2b2b2b;;
 $base-button-bg-color-darker: #408684;
 
 $text-color: #333;
-$link-color: #4DA9A6;
+$link-color: #2b2b2b;;
 
 $gradient-color-1: $primary-color;
 $gradient-color-2: #7b5ab2;
@@ -25,14 +25,14 @@ $main-font-family: 'Roboto', sans-serif;
 
 // header
 $header-background-color: #fff;
-$header-logo-width: 128.54px;
-$header-logo-height: 30px;
+$header-logo-width: 200px;
+$header-logo-height: 80px;
 
 // header menu
 $header-menu-icon-color: #9EAAB6;
 $header-menu-text-color: #242A31;
-$header-menu-icon-color-selected: #4DA9A6;
-$header-menu-text-color-selected: #4DA9A6;
+$header-menu-icon-color-selected: #2b2b2b;;
+$header-menu-text-color-selected: #2b2b2b;;
 $header-font-size: 14px;
 
 // daily quota
@@ -74,7 +74,7 @@ $foreign-logo-width: 54px;
 $foreign-logo-height: 11px;
 
 // buttons
-$button-background-color: #4DA9A6;
+$button-background-color: #2b2b2b;
 $button-text-color: #fff;
 
 $button-background-color-2: $tertiary-color;
@@ -108,7 +108,7 @@ $modal-background-color: #fff;
 $modal-overlay-background-color: rgba(#9EAAB6, 0.8);
 $modal-title-color: #242A31;
 $modal-text-color: #242A31;
-$modal-link-color: #4DA9A6;
+$modal-link-color: #2b2b2b;
 $daily-quota-modal-title: $text-color;
 $modal-close-button: "../images/themes/stake/bridge/close.svg";
 $modal-close-button-padding: 0;
@@ -141,9 +141,9 @@ $loading-container-justify-content: space-around;
 $bridge-gradient-start: #fff;
 $bridge-gradient-end: #fff;
 $bridge-logo-background-color: $primary-color;
-$bridge-link-color: #4DA9A6;
-$bridge-balance-color: #4DA9A6;
-$bridge-button-background-color: #4DA9A6;
+$bridge-link-color: #2b2b2b;
+$bridge-balance-color: #2b2b2b;
+$bridge-button-background-color: #2b2b2b;
 $bridge-button-text-color: #fff;
 $bridge-textfield-background: #F5F7F9;
 $bridge-input-label-color: #75818D;
@@ -200,7 +200,7 @@ $transfer-operation-arrow-ellipse-image: $base-images-path + '/themes/' + $theme
 $transfer-operation-arrow-image: $base-images-path + '/themes/' + $theme-name + '/bridge/arrow.svg';
 
 // copy icon
-$copy-icon-color: #4DA9A6;
+$copy-icon-color: #2b2b2b;;
 $copy-icon-hover-color: #408684;
 
 // status section

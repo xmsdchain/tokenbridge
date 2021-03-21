@@ -3,7 +3,7 @@
   justify-content: center;
 
   .status-page-container {
-    display: flex;
+    display: block;
     flex-direction: $status-container-flex-direction;
     justify-content: $status-container-justify-content;
     max-width: $container-width;

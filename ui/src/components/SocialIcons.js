@@ -16,7 +16,7 @@ export const SocialIcons = () => {
   const iconClass = useAlternativeIcons ? 'social-alternative-icons-item' : 'social-icons-item'
 
   const socialItems = [
-    {
+    /* {
       icon: useAlternativeIcons ? <IconXDai /> : <IconPOA />,
       link: useAlternativeIcons ? 'https://xdaichain.com/' : 'https://poa.network'
     },
@@ -32,6 +32,7 @@ export const SocialIcons = () => {
       icon: useAlternativeIcons ? <AlternativeIconGithub /> : <IconGithub />,
       link: useAlternativeIcons ? 'https://github.com/xdaichain' : 'https://github.com/poanetwork/tokenbridge'
     }
+    */
   ]
 
   return (
