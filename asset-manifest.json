@@ -1,0 +1,19 @@
+{
+  "files": {
+    "main.css": "/static/css/main.fd6364fb.chunk.css",
+    "main.js": "/static/js/main.aee8ae75.chunk.js",
+    "main.js.map": "/static/js/main.aee8ae75.chunk.js.map",
+    "runtime~main.js": "/static/js/runtime~main.a8a9905a.js",
+    "runtime~main.js.map": "/static/js/runtime~main.a8a9905a.js.map",
+    "static/js/2.631dbb46.chunk.js": "/static/js/2.631dbb46.chunk.js",
+    "static/js/2.631dbb46.chunk.js.map": "/static/js/2.631dbb46.chunk.js.map",
+    "index.html": "/index.html",
+    "precache-manifest.79df3f72e5eb19591a0e6a45097f1c85.js": "/precache-manifest.79df3f72e5eb19591a0e6a45097f1c85.js",
+    "service-worker.js": "/service-worker.js",
+    "static/css/main.fd6364fb.chunk.css.map": "/static/css/main.fd6364fb.chunk.css.map",
+    "static/media/application.css": "/static/media/transfer-line.87d0ee10.svg",
+    "static/media/disclaimer@2x.png": "/static/media/disclaimer@2x.99716024.png",
+    "static/media/i@3x.png": "/static/media/i@3x.67616475.png",
+    "static/media/icon-arrows@2x.png": "/static/media/icon-arrows@2x.479d6f1c.png"
+  }
+}
